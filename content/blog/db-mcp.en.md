@@ -1,14 +1,12 @@
 +++
 title = "db-mcp: one binary for all your databases"
 date = 2026-05-30
-description = "A lightweight Rust MCP server that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately"
+description = "A lightweight MCP server written in Rust that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately"
 +++
 
-# db-mcp: one binary for all your databases
+I needed a private utility for work and personal projects: read data from databases, but never write. Existing solutions weren't what I wanted — those that existed were JS/Python packages. I just needed a simple binary: download and run, without Node.js or other overhead. Plus, always nice to build something yourself :)
 
-I needed a private utility for work: read data from databases without writing anything. Looked for an existing MCP server for databases — existing options either didn't fit (too narrow scope) or were JavaScript packages, but I just wanted a simple binary without runtime overhead. Plus, I wanted to use it not only in Claude, but also in other tools: OpenCode, Jan, Zed.
-
-So I built **db-mcp** — a lightweight Rust binary that:
+So I built **db-mcp** ([github](https://github.com/zeslava/db-mcp)) — a lightweight Rust binary that:
 - Reads from PostgreSQL, MySQL/MariaDB, SQLite, and ClickHouse via URL scheme
 - Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client
 - Simple and safe by design: read-only (SELECT only), parameterized queries
@@ -22,7 +20,6 @@ At work, I often need to give Claude access to data: fetch information, analyze,
 - **Private** (runs locally, nothing sent to cloud)
 - **Universal** (not just Claude — I use OpenCode, Jan for different tasks)
 
-Existing solutions were limited, and those that existed were JavaScript packages. I just wanted a simple binary without pulling in Node.js.
 
 ## How it works
 
@@ -62,14 +59,14 @@ All clients launch the same binary; the difference is just where the config file
 
 ### Claude Code (CLI)
 
-**Via CLI:**
+**cli**
 ```bash
 claude mcp add db \
   --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb \
   -- /absolute/path/to/db-mcp
 ```
 
-**Via claude.json:**
+**claude.json**
 ```json
 {
   "mcpServers": {
@@ -140,9 +137,9 @@ In `settings.json` (custom MCP servers live under `context_servers`, not `lsp`):
 }
 ```
 
-## Real-world scenarios
+## In practice
 
-### Scenario 1: context for development
+### Scenario 1: development context
 
 ```
 In Claude Code:
