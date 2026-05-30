@@ -62,16 +62,14 @@ All clients launch the same binary; the difference is just where the config file
 
 ### Claude Code (CLI)
 
+**Via CLI:**
 ```bash
 claude mcp add db \
   --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb \
   -- /absolute/path/to/db-mcp
 ```
 
-### Claude Desktop
-
-**claude_desktop_config.json** (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`, Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
-
+**Via claude.json:**
 ```json
 {
   "mcpServers": {
@@ -217,6 +215,7 @@ cargo build --release
 ## What's next
 
 Planned features:
+- Support for more databases (and beyond)
 - Query logging and audit trails
 - Per-table access control (for more granular permissions)
-- Query result caching
+- Server mode

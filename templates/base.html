@@ -1,47 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{{ config.title }}{% endblock %}</title>
-  <link rel="stylesheet" href="{{ get_url(path='main.css') }}">
-  {% if page.description %}
-  <meta name="description" content="{{ page.description }}">
-  {% elif config.description %}
-  <meta name="description" content="{{ config.description }}">
-  {% endif %}
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="{{ config.base_url }}">{{ config.title }}</a>
-      <a href="{{ get_url(path='blog') }}">posts</a>
-      <div class="lang-switcher">
-        {% if lang == "ru" %}
-          {% set target_url = "" %}
-          {% if page and page.translations %}
-            {% for tr in page.translations %}{% if tr.lang == "en" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
-          {% elif section and section.translations %}
-            {% for tr in section.translations %}{% if tr.lang == "en" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
-          {% endif %}
-          {% if target_url %}<a href="{{ target_url }}">EN</a>{% else %}<a href="{{ config.base_url }}/en/">EN</a>{% endif %}
-        {% else %}
-          {% set target_url = "" %}
-          {% if page and page.translations %}
-            {% for tr in page.translations %}{% if tr.lang == "ru" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
-          {% elif section and section.translations %}
-            {% for tr in section.translations %}{% if tr.lang == "ru" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
-          {% endif %}
-          {% if target_url %}<a href="{{ target_url }}">RU</a>{% else %}<a href="{{ config.base_url }}/">RU</a>{% endif %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}{{ config.title }}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ get_url(path='main.css') }}" />
+        <link
+            rel="icon"
+            href="{{ get_url(path='favicon.svg') }}"
+            type="image/svg+xml"
+        />
+        <link
+            rel="icon"
+            href="{{ get_url(path='favicon.png') }}"
+            type="image/png"
+            sizes="400x400"
+        />
+        <link rel="apple-touch-icon" href="{{ get_url(path='favicon.png') }}" />
+        {% if page.description %}
+        <meta name="description" content="{{ page.description }}" />
+        {% elif config.description %}
+        <meta name="description" content="{{ config.description }}" />
         {% endif %}
-      </div>
-    </nav>
-  </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-  <footer>
-    <p>{{ now() | date(format="%Y") }}</p>
-  </footer>
-</body>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="{{ config.base_url }}">{{ config.title }}</a>
+                <a href="{{ get_url(path='blog') }}">posts</a>
+                <div class="lang-switcher">
+                    {% if lang == "ru" %} {% set target_url = "" %} {% if page
+                    and page.translations %} {% for tr in page.translations %}{%
+                    if tr.lang == "en" %}{% set_global target_url = tr.permalink
+                    %}{% endif %}{% endfor %} {% elif section and
+                    section.translations %} {% for tr in section.translations
+                    %}{% if tr.lang == "en" %}{% set_global target_url =
+                    tr.permalink %}{% endif %}{% endfor %} {% endif %} {% if
+                    target_url %}
+                    <a href="{{ target_url }}">EN</a>
+                    {% else %}
+                    <a href="{{ config.base_url }}/en/">EN</a>
+                    {% endif %} {% else %} {% set target_url = "" %} {% if page
+                    and page.translations %} {% for tr in page.translations %}{%
+                    if tr.lang == "ru" %}{% set_global target_url = tr.permalink
+                    %}{% endif %}{% endfor %} {% elif section and
+                    section.translations %} {% for tr in section.translations
+                    %}{% if tr.lang == "ru" %}{% set_global target_url =
+                    tr.permalink %}{% endif %}{% endfor %} {% endif %} {% if
+                    target_url %}<a href="{{ target_url }}">RU</a>{% else %}<a
+                        href="{{ config.base_url }}/"
+                        >RU</a
+                    >{% endif %} {% endif %}
+                </div>
+            </nav>
+        </header>
+        <main>{% block content %}{% endblock %}</main>
+        <footer>
+            <p>{{ now() | date(format="%Y") }}</p>
+        </footer>
+    </body>
 </html>
