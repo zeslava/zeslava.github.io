@@ -1,6 +1,7 @@
 base_url = "https://zeslava.github.io"
 title = "zeslava"
 description = ""
+default_language = "en"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
@@ -8,10 +9,14 @@ compile_sass = true
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = false
 
+[languages.ru]
+title = "zeslava"
+description = ""
+
 [markdown]
 
 [markdown.highlighting]
-theme = "catppuccin-mocha"
+theme = "catppuccin-latte"
 
 [extra]
 # Put all your custom variables here
