@@ -1,32 +1,32 @@
 +++
-title = "db-mcp: one binary for all your databases"
+title = "db-mcp: один бинарь для всех баз"
 date = 2026-05-30
-description = "A lightweight Rust MCP server that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately"
+description = "Легкий Rust MCP-сервер, позволяющий Claude и другим инструментам запрашивать данные из PostgreSQL, MySQL, SQLite и ClickHouse безопасно и приватно"
 +++
 
-# db-mcp: one binary for all your databases
+# db-mcp: один бинарь для всех баз
 
-I needed a private utility for work: read data from databases without writing anything. Looked for an existing MCP server for databases — existing options either didn't fit (too narrow scope) or were JavaScript packages, but I just wanted a simple binary without runtime overhead. Plus, I wanted to use it not only in Claude, but also in other tools: OpenCode, Jan, Zed.
+Нужна была приватная утилита для работы: читать данные из баз, но ничего не писать. Искал готовый MCP-сервер для БД — существующие либо не подходили (слишком узкие), либо это были JS-пакеты, а мне просто нужен бинарь без runtime. Плюс хотелось использовать не только в Claude, но и в других инструментах: OpenCode, Jan, Zed.
 
-So I built **db-mcp** — a lightweight Rust binary that:
-- Reads from PostgreSQL, MySQL/MariaDB, SQLite, and ClickHouse via URL scheme
-- Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client
-- Simple and safe by design: read-only (SELECT only), parameterized queries
-- Builds once with all backends enabled — choose your database at startup
-- Ships as a fully static Linux binary (musl, no glibc at runtime)
+Так появился **db-mcp** — небольшой Rust-бинарь, который:
+- Читает данные из PostgreSQL, MySQL/MariaDB, SQLite и ClickHouse через URL-схему
+- Работает с Claude, OpenCode, Jan, Zed и другими MCP-клиентами
+- Простой и безопасный: только SELECT, параметризованные запросы
+- Собирается один раз со всеми бэкендами сразу — выбираете БД при запуске
+- Под Linux — полностью статический бинарь (musl, без glibc в рантайме)
 
-## Why this was needed
+## Почему это было нужно
 
-At work, I often need to give Claude access to data: fetch information, analyze, provide context for scripting. Requirements were:
-- **Safe** (read-only, parameterized queries)
-- **Private** (runs locally, nothing sent to cloud)
-- **Universal** (not just Claude — I use OpenCode, Jan for different tasks)
+На работе часто нужно давать Claude доступ к данным: достать информацию, проанализировать, помочь с контекстом для написания скриптов. Нужно было:
+- **Безопасно** (только чтение, параметризованные запросы)
+- **Приватно** (работает локально, ничего не отправляется в облако)
+- **Универсально** (не только Claude — я использую OpenCode, Jan для разных задач)
 
-Existing solutions were limited, and those that existed were JavaScript packages. I just wanted a simple binary without pulling in Node.js.
+Готовых решений было мало, а те что были — JS-пакеты. Нужен был просто бинарь, не надо тянуть Node.js.
 
-## How it works
+## Как это работает
 
-db-mcp is a stdio MCP server written in Rust. You point it at a database URL via the `--database-url` flag or the `DATABASE_URL` env var:
+db-mcp — это stdio MCP-сервер на Rust. URL базы передаётся флагом `--database-url` или переменной `DATABASE_URL`:
 
 ```bash
 db-mcp --database-url postgres://user:pass@localhost:5432/mydb
@@ -35,15 +35,15 @@ db-mcp --database-url sqlite:///absolute/path/to/data.db
 db-mcp --database-url clickhouse://default:pass@localhost:8123/default
 ```
 
-The server detects the engine from the URL scheme and connects. Then Claude/OpenCode/Jan can use three tools:
+Сервер определяет движок по схеме URL и подключается. Дальше Claude/OpenCode/Jan может использовать три инструмента:
 
-| Tool | Params | What it does |
-|------|--------|--------------|
-| `list_tables` | — | List user tables |
-| `describe_table` | `table`, `schema?` | Columns, types, nullability |
-| `query` | `sql` | Run a SELECT, returns JSON rows |
+| Tool | Параметры | Что делает |
+|------|-----------|------------|
+| `list_tables` | — | Список пользовательских таблиц |
+| `describe_table` | `table`, `schema?` | Колонки, типы, nullability |
+| `query` | `sql` | Выполняет SELECT, возвращает JSON-строки |
 
-A `query` call returns plain JSON, so the model gets real values to reason about:
+`query` возвращает обычный JSON, так что модель получает реальные значения, с которыми можно работать:
 
 ```json
 [
@@ -52,13 +52,13 @@ A `query` call returns plain JSON, so the model gets real values to reason about
 ]
 ```
 
-### Safe by design
+### Безопасность по дизайну
 
-SELECT-only enforcement lives in the server, not in the adapters. Anything that doesn't start with `SELECT` (case-insensitive, after trim) is rejected — that even blocks CTE tricks like `WITH ... INSERT ... RETURNING`. Every adapter uses parameterized queries, never string-concatenated SQL. For an extra layer, point it at a read-only database role.
+Ограничение «только SELECT» живёт в сервере, а не в адаптерах. Всё, что не начинается с `SELECT` (без учёта регистра, после `trim`), отклоняется — это блокирует и трюки с CTE вроде `WITH ... INSERT ... RETURNING`. Каждый адаптер использует параметризованные запросы, никакой конкатенации SQL строками. Для дополнительного слоя защиты подключайтесь под ролью с правами только на чтение.
 
-## Setup for different tools
+## Настройка для разных инструментов
 
-All clients launch the same binary; the difference is just where the config file lives. I prefer passing the URL through `DATABASE_URL` so it isn't visible in the args list.
+Все клиенты запускают один и тот же бинарь, отличается только путь к конфигу. Я предпочитаю передавать URL через `DATABASE_URL`, чтобы он не светился в списке аргументов.
 
 ### Claude Code (CLI)
 
@@ -87,11 +87,11 @@ claude mcp add db \
 }
 ```
 
-Restart Claude and the tools appear.
+Перезагружаете Claude — инструменты появляются.
 
 ### OpenCode
 
-In your `opencode.json` (project or `~/.config/opencode/opencode.json`):
+В `opencode.json` (в проекте или `~/.config/opencode/opencode.json`):
 
 ```json
 {
@@ -108,7 +108,7 @@ In your `opencode.json` (project or `~/.config/opencode/opencode.json`):
 
 ### Jan
 
-Jan has built-in MCP support (Settings → MCP Servers). The equivalent config is a command + args + env entry:
+Jan имеет встроенную поддержку MCP (Settings → MCP Servers). Эквивалентный конфиг — запись command + args + env:
 
 ```json
 {
@@ -124,7 +124,7 @@ Jan has built-in MCP support (Settings → MCP Servers). The equivalent config i
 
 ### Zed
 
-In `settings.json` (custom MCP servers live under `context_servers`, not `lsp`):
+В `settings.json` (кастомные MCP-серверы живут в `context_servers`, а не в `lsp`):
 
 ```json
 {
@@ -142,52 +142,52 @@ In `settings.json` (custom MCP servers live under `context_servers`, not `lsp`):
 }
 ```
 
-## Real-world scenarios
+## На практике
 
-### Scenario 1: context for development
+### Сценарий 1: помощь с контекстом при разработке
 
 ```
-In Claude Code:
-"Help me write a migration to add a new field.
-Check the current users table structure."
+Я в Claude Code:
+"Помоги написать миграцию для добавления нового поля.
+Посмотри текущую структуру таблицы users."
 
 Claude:
-1. Calls db-mcp (describe_table) → gets current schema
-2. Sees existing fields and constraints
-3. Generates a correct migration for your actual database
+1. Дёргает db-mcp (describe_table) → узнаёт текущую схему
+2. Видит какие поля уже есть, какие constraints
+3. Генерирует правильную миграцию для именно вашей БД
 ```
 
-### Scenario 2: data analysis in OpenCode
+### Сценарий 2: анализ данных в OpenCode
 
 ```
-In OpenCode analyzing metrics:
-"How many active users this month?
-What are the most popular features?"
+В OpenCode анализирую метрики:
+"Сколько активных пользователей в этом месяце?
+Какие самые популярные функции?"
 
-OpenCode uses db-mcp (query), the model sees real numbers
-and provides analysis grounded in actual data.
+OpenCode использует db-mcp (query), модель смотрит реальные данные
+и даёт анализ с конкретными цифрами.
 ```
 
-### Scenario 3: debugging in Jan
+### Сценарий 3: отладка в Jan
 
 ```
-Jan with db-mcp helps debug:
-"Are there orders without user_id in the orders table?"
+Jan с db-mcp помогает разобраться с багом:
+"В таблице orders есть записи без user_id?"
 
-Jan queries through db-mcp, sees there are 12 such records,
-suggests how to fix it.
+Jan запрашивает через db-mcp, видит что есть 12 таких,
+предлагает как это почистить.
 ```
 
-## Installation
+## Установка
 
-Quick install (Linux and macOS Apple Silicon) — auto-detects OS/arch, verifies the checksum, installs to `~/.local/bin` by default:
+Быстрая установка (Linux и macOS Apple Silicon) — определяет ОС/архитектуру, проверяет контрольную сумму, по умолчанию ставит в `~/.local/bin`:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf \
   https://raw.githubusercontent.com/zeslava/db-mcp/main/install.sh | sh
 ```
 
-Or grab a release tarball manually (Linux x86_64/aarch64, macOS arm64, Windows x86_64):
+Или скачиваете тарболл из релизов вручную (Linux x86_64/aarch64, macOS arm64, Windows x86_64):
 
 ```bash
 TARGET=x86_64-unknown-linux-gnu
@@ -196,7 +196,7 @@ curl -sSL "https://github.com/zeslava/db-mcp/releases/latest/download/db-mcp-${T
 install -m 755 "db-mcp-${TARGET}/db-mcp" "$HOME/.local/bin/db-mcp"
 ```
 
-Or build from source:
+Или собираете сами:
 
 ```bash
 git clone https://github.com/zeslava/db-mcp
@@ -205,18 +205,18 @@ cargo build --release
 ./target/release/db-mcp --database-url postgres://localhost/mydb
 ```
 
-## Benefits of this approach
+## Преимущества такого подхода
 
-- ✅ One binary for four engines (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)
-- ✅ Works everywhere: Claude, OpenCode, Jan, Zed, any MCP client
-- ✅ No runtime overhead (no JS, Python) — pure Rust, static musl binary on Linux
-- ✅ Safe by design: SELECT-only, parameterized queries
-- ✅ Private: runs locally or in your infrastructure
-- ✅ Simple setup: just a database URL
+- ✅ Один бинарь для четырёх движков (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)
+- ✅ Работает везде: Claude, OpenCode, Jan, Zed, любой MCP-клиент
+- ✅ Никакого runtime (JS, Python) — чистый Rust, статический musl-бинарь под Linux
+- ✅ Безопасно по дизайну: только SELECT, параметризованные запросы
+- ✅ Приватно: работает локально или в вашей инфре
+- ✅ Простая настройка: просто URL БД
 
-## What's next
+## Что дальше
 
-Planned features:
-- Query logging and audit trails
-- Per-table access control (for more granular permissions)
-- Query result caching
+В планах:
+- Логирование и аудит запросов
+- Ограничение доступа по таблицам (для более узких прав)
+- Кэширование результатов
