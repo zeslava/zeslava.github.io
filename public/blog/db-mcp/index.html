@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>db-mcp: один бинарь для всех баз — zeslava</title>
+        <title>db-mcp: подключаем бд к ии — zeslava</title>
         <link rel="stylesheet" href="https://zeslava.github.io/main.css" />
         <link
             rel="icon"
@@ -18,7 +18,7 @@
         />
         <link rel="apple-touch-icon" href="https://zeslava.github.io/favicon.png" />
         
-        <meta name="description" content="Легкий Rust MCP-сервер, позволяющий Claude и другим инструментам запрашивать данные из PostgreSQL, MySQL, SQLite и ClickHouse безопасно и приватно" />
+        <meta name="description" content="Легкий MCP-сервер для подключения к БД написанный на Rust, позволяющий Claude и другим инструментам запрашивать данные из PostgreSQL, MySQL, SQLite и ClickHouse безопасно и приватно" />
         
     </head>
     <body>
@@ -36,13 +36,15 @@
         <main>
 <article class="post">
   <header>
-    <h1>db-mcp: один бинарь для всех баз</h1>
+    <h1>db-mcp: подключаем бд к ии</h1>
     <time>2026-05-30</time>
   </header>
   <div class="content">
-    <h1 id="db-mcp-odin-binar-dlia-vsekh-baz">db-mcp: один бинарь для всех баз</h1>
-<p>Нужна была приватная утилита для работы: читать данные из баз, но ничего не писать. Искал готовый MCP-сервер для БД — существующие либо не подходили (слишком узкие), либо это были JS-пакеты, а мне просто нужен бинарь без runtime. Плюс хотелось использовать не только в Claude, но и в других инструментах: OpenCode, Jan, Zed.</p>
-<p>Так появился <strong>db-mcp</strong> — небольшой Rust-бинарь, который:</p>
+    <p>Нужна была приватная утилита для работы и домашних проектов: читать данные из баз, но ничего не писать.
+Готовые решения не понравились, а те что были — JS/Python-пакеты.
+А мне нужен был просто бинарь: скачал и запустил, без всяких Node.js и прочих.
+Плюс всегда есть желание сделать что-то своё :)</p>
+<p>Так появился <strong>db-mcp</strong> (<a rel="external" href="https://github.com/zeslava/db-mcp">github</a>) — небольшой бинарь, который:</p>
 <ul>
 <li>Читает данные из PostgreSQL, MySQL/MariaDB, SQLite и ClickHouse через URL-схему</li>
 <li>Работает с Claude, OpenCode, Jan, Zed и другими MCP-клиентами</li>
@@ -55,11 +57,10 @@
 <ul>
 <li><strong>Безопасно</strong> (только чтение, параметризованные запросы)</li>
 <li><strong>Приватно</strong> (работает локально, ничего не отправляется в облако)</li>
-<li><strong>Универсально</strong> (не только Claude — я использую OpenCode, Jan для разных задач)</li>
+<li><strong>Универсально</strong> (не только Claude — я использую OpenCode, Zed, Jan для разных задач)</li>
 </ul>
-<p>Готовых решений было мало, а те что были — JS-пакеты. Нужен был просто бинарь, не надо тянуть Node.js.</p>
 <h2 id="kak-eto-rabotaet">Как это работает</h2>
-<p>db-mcp — это stdio MCP-сервер на Rust. URL базы передаётся флагом <code>--database-url</code> или переменной <code>DATABASE_URL</code>:</p>
+<p><strong>db-mcp</strong> — это stdio MCP-сервер на Rust. URL базы передаётся флагом <code>--database-url</code> или переменной <code>DATABASE_URL</code>:</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url postgres://user:pass@localhost:5432/mydb</span></span>
 <span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url mysql://user:pass@localhost:3306/mydb</span></span>
 <span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url sqlite:///absolute/path/to/data.db</span></span>
@@ -79,10 +80,11 @@
 <h2 id="nastroika-dlia-raznykh-instrumentov">Настройка для разных инструментов</h2>
 <p>Все клиенты запускают один и тот же бинарь, отличается только путь к конфигу. Я предпочитаю передавать URL через <code>DATABASE_URL</code>, чтобы он не светился в списке аргументов.</p>
 <h3 id="claude-code-cli">Claude Code (CLI)</h3>
+<p><strong>cli</strong></p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">claude</span><span style="color: #40A02B;"> mcp add db</span><span style="color: #EA76CB;"> \</span></span>
 <span class="giallo-l"><span style="color: #40A02B;">  --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb</span><span style="color: #EA76CB;"> \</span></span>
-<span class="giallo-l"><span style="color: #40A02B;">  -- /absolute/path/to/db-mcp</span></span></code></pre><h3 id="claude-desktop">Claude Desktop</h3>
-<p><strong>claude_desktop_config.json</strong> (macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>, Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>):</p>
+<span class="giallo-l"><span style="color: #40A02B;">  -- /absolute/path/to/db-mcp</span></span></code></pre>
+<p><strong>claude.json</strong></p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">mcpServers</span><span style="color: #7C7F93;">&quot;: {</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">db-mcp</span><span style="color: #7C7F93;">&quot;: {</span></span>
@@ -95,7 +97,7 @@
 <span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre>
-<p>Перезагружаете Claude — инструменты появляются.</p>
+<p>Перезагружаем Claude — инструменты появляются.</p>
 <h3 id="opencode">OpenCode</h3>
 <p>В <code>opencode.json</code> (в проекте или <code>~/.config/opencode/opencode.json</code>):</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
@@ -168,17 +170,17 @@
 <ul>
 <li>✅ Один бинарь для четырёх движков (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)</li>
 <li>✅ Работает везде: Claude, OpenCode, Jan, Zed, любой MCP-клиент</li>
-<li>✅ Никакого runtime (JS, Python) — чистый Rust, статический musl-бинарь под Linux</li>
+<li>✅ Никакого runtime (JS, Python) — чистый Rust, статический бинарь</li>
 <li>✅ Безопасно по дизайну: только SELECT, параметризованные запросы</li>
 <li>✅ Приватно: работает локально или в вашей инфре</li>
 <li>✅ Простая настройка: просто URL БД</li>
 </ul>
-<h2 id="chto-dal-she">Что дальше</h2>
-<p>В планах:</p>
+<h2 id="dal-she-v-planakh">Дальше в планах:</h2>
 <ul>
+<li>Поддержка других БД (и не только бд)</li>
 <li>Логирование и аудит запросов</li>
 <li>Ограничение доступа по таблицам (для более узких прав)</li>
-<li>Кэширование результатов</li>
+<li>Режим сервера</li>
 </ul>
 
   </div>

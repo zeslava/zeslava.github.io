@@ -18,7 +18,7 @@
         />
         <link rel="apple-touch-icon" href="https://zeslava.github.io/favicon.png" />
         
-        <meta name="description" content="A lightweight Rust MCP server that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately" />
+        <meta name="description" content="A lightweight MCP server written in Rust that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately" />
         
     </head>
     <body>
@@ -38,9 +38,8 @@
     <time>2026-05-30</time>
   </header>
   <div class="content">
-    <h1 id="db-mcp-one-binary-for-all-your-databases">db-mcp: one binary for all your databases</h1>
-<p>I needed a private utility for work: read data from databases without writing anything. Looked for an existing MCP server for databases — existing options either didn't fit (too narrow scope) or were JavaScript packages, but I just wanted a simple binary without runtime overhead. Plus, I wanted to use it not only in Claude, but also in other tools: OpenCode, Jan, Zed.</p>
-<p>So I built <strong>db-mcp</strong> — a lightweight Rust binary that:</p>
+    <p>I needed a private utility for work and personal projects: read data from databases, but never write. Existing solutions weren't what I wanted — those that existed were JS/Python packages. I just needed a simple binary: download and run, without Node.js or other overhead. Plus, always nice to build something yourself :)</p>
+<p>So I built <strong>db-mcp</strong> (<a rel="external" href="https://github.com/zeslava/db-mcp">github</a>) — a lightweight Rust binary that:</p>
 <ul>
 <li>Reads from PostgreSQL, MySQL/MariaDB, SQLite, and ClickHouse via URL scheme</li>
 <li>Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client</li>
@@ -55,7 +54,6 @@
 <li><strong>Private</strong> (runs locally, nothing sent to cloud)</li>
 <li><strong>Universal</strong> (not just Claude — I use OpenCode, Jan for different tasks)</li>
 </ul>
-<p>Existing solutions were limited, and those that existed were JavaScript packages. I just wanted a simple binary without pulling in Node.js.</p>
 <h2 id="how-it-works">How it works</h2>
 <p>db-mcp is a stdio MCP server written in Rust. You point it at a database URL via the <code>--database-url</code> flag or the <code>DATABASE_URL</code> env var:</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url postgres://user:pass@localhost:5432/mydb</span></span>
@@ -77,10 +75,11 @@
 <h2 id="setup-for-different-tools">Setup for different tools</h2>
 <p>All clients launch the same binary; the difference is just where the config file lives. I prefer passing the URL through <code>DATABASE_URL</code> so it isn't visible in the args list.</p>
 <h3 id="claude-code-cli">Claude Code (CLI)</h3>
+<p><strong>cli</strong></p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">claude</span><span style="color: #40A02B;"> mcp add db</span><span style="color: #EA76CB;"> \</span></span>
 <span class="giallo-l"><span style="color: #40A02B;">  --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb</span><span style="color: #EA76CB;"> \</span></span>
-<span class="giallo-l"><span style="color: #40A02B;">  -- /absolute/path/to/db-mcp</span></span></code></pre><h3 id="claude-desktop">Claude Desktop</h3>
-<p><strong>claude_desktop_config.json</strong> (macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>, Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>):</p>
+<span class="giallo-l"><span style="color: #40A02B;">  -- /absolute/path/to/db-mcp</span></span></code></pre>
+<p><strong>claude.json</strong></p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">mcpServers</span><span style="color: #7C7F93;">&quot;: {</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">db-mcp</span><span style="color: #7C7F93;">&quot;: {</span></span>
@@ -129,8 +128,8 @@
 <span class="giallo-l"><span style="color: #7C7F93;">      }</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
 <span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
-<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre><h2 id="real-world-scenarios">Real-world scenarios</h2>
-<h3 id="scenario-1-context-for-development">Scenario 1: context for development</h3>
+<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre><h2 id="in-practice">In practice</h2>
+<h3 id="scenario-1-development-context">Scenario 1: development context</h3>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>In Claude Code:</span></span>
 <span class="giallo-l"><span>&quot;Help me write a migration to add a new field.</span></span>
 <span class="giallo-l"><span>Check the current users table structure.&quot;</span></span>
@@ -174,9 +173,10 @@
 <h2 id="what-s-next">What's next</h2>
 <p>Planned features:</p>
 <ul>
+<li>Support for more databases (and beyond)</li>
 <li>Query logging and audit trails</li>
 <li>Per-table access control (for more granular permissions)</li>
-<li>Query result caching</li>
+<li>Server mode</li>
 </ul>
 
   </div>
