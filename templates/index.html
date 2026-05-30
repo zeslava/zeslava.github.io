@@ -5,7 +5,11 @@
   {{ section.content | safe }}
 </section>
 <section class="posts">
-  {% set blog = get_section(path="blog/_index.md") %}
+  {% if lang == "en" %}
+    {% set blog = get_section(path="blog/_index.en.md") %}
+  {% else %}
+    {% set blog = get_section(path="blog/_index.md") %}
+  {% endif %}
   {% for page in blog.pages | slice(end=5) %}
   <article>
     <time>{{ page.date | date(format="%Y-%m-%d") }}</time>

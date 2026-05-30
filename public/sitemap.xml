@@ -7,7 +7,17 @@
         <loc>https://zeslava.github.io/blog/</loc>
     </url>
     <url>
-        <loc>https://zeslava.github.io/blog/hello-world/</loc>
+        <loc>https://zeslava.github.io/blog/db-mcp/</loc>
+        <lastmod>2026-05-30</lastmod>
+    </url>
+    <url>
+        <loc>https://zeslava.github.io/en/</loc>
+    </url>
+    <url>
+        <loc>https://zeslava.github.io/en/blog/</loc>
+    </url>
+    <url>
+        <loc>https://zeslava.github.io/en/blog/db-mcp/</loc>
         <lastmod>2026-05-30</lastmod>
     </url>
 </urlset>

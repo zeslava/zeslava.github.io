@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>db-mcp: one binary for all your databases — zeslava</title>
+  <link rel="stylesheet" href="https://zeslava.github.io/main.css">
+  
+  <meta name="description" content="A lightweight Rust MCP server that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately">
+  
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="https:&#x2F;&#x2F;zeslava.github.io">zeslava</a>
+      <a href="https://zeslava.github.io/blog">posts</a>
+      <div class="lang-switcher">
+        
+          
+          
+            
+          
+          <a href="https:&#x2F;&#x2F;zeslava.github.io&#x2F;blog&#x2F;db-mcp&#x2F;">RU</a>
+        
+      </div>
+    </nav>
+  </header>
+  <main>
+    
+<article class="post">
+  <header>
+    <h1>db-mcp: one binary for all your databases</h1>
+    <time>2026-05-30</time>
+  </header>
+  <div class="content">
+    <h1 id="db-mcp-one-binary-for-all-your-databases">db-mcp: one binary for all your databases</h1>
+<p>I needed a private utility for work: read data from databases without writing anything. Looked for an existing MCP server for databases — existing options either didn't fit (too narrow scope) or were JavaScript packages, but I just wanted a simple binary without runtime overhead. Plus, I wanted to use it not only in Claude, but also in other tools: OpenCode, Jan, Zed.</p>
+<p>So I built <strong>db-mcp</strong> — a lightweight Rust binary that:</p>
+<ul>
+<li>Reads from PostgreSQL, MySQL/MariaDB, SQLite, and ClickHouse via URL scheme</li>
+<li>Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client</li>
+<li>Simple and safe by design: read-only (SELECT only), parameterized queries</li>
+<li>Builds once with all backends enabled — choose your database at startup</li>
+<li>Ships as a fully static Linux binary (musl, no glibc at runtime)</li>
+</ul>
+<h2 id="why-this-was-needed">Why this was needed</h2>
+<p>At work, I often need to give Claude access to data: fetch information, analyze, provide context for scripting. Requirements were:</p>
+<ul>
+<li><strong>Safe</strong> (read-only, parameterized queries)</li>
+<li><strong>Private</strong> (runs locally, nothing sent to cloud)</li>
+<li><strong>Universal</strong> (not just Claude — I use OpenCode, Jan for different tasks)</li>
+</ul>
+<p>Existing solutions were limited, and those that existed were JavaScript packages. I just wanted a simple binary without pulling in Node.js.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>db-mcp is a stdio MCP server written in Rust. You point it at a database URL via the <code>--database-url</code> flag or the <code>DATABASE_URL</code> env var:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url postgres://user:pass@localhost:5432/mydb</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url mysql://user:pass@localhost:3306/mydb</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url sqlite:///absolute/path/to/data.db</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">db-mcp</span><span style="color: #40A02B;"> --database-url clickhouse://default:pass@localhost:8123/default</span></span></code></pre>
+<p>The server detects the engine from the URL scheme and connects. Then Claude/OpenCode/Jan can use three tools:</p>
+<table><thead><tr><th>Tool</th><th>Params</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>list_tables</code></td><td>—</td><td>List user tables</td></tr>
+<tr><td><code>describe_table</code></td><td><code>table</code>, <code>schema?</code></td><td>Columns, types, nullability</td></tr>
+<tr><td><code>query</code></td><td><code>sql</code></td><td>Run a SELECT, returns JSON rows</td></tr>
+</tbody></table>
+<p>A <code>query</code> call returns plain JSON, so the model gets real values to reason about:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">[</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  { &quot;</span><span style="color: #1E66F5;">id</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #FE640B;"> 1</span><span style="color: #7C7F93;">, &quot;</span><span style="color: #1E66F5;">email</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;ada@example.com&quot;</span><span style="color: #7C7F93;">, &quot;</span><span style="color: #1E66F5;">created_at</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;2026-05-01 09:12:33&quot;</span><span style="color: #7C7F93;"> },</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  { &quot;</span><span style="color: #1E66F5;">id</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #FE640B;"> 2</span><span style="color: #7C7F93;">, &quot;</span><span style="color: #1E66F5;">email</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;linus@example.com&quot;</span><span style="color: #7C7F93;">, &quot;</span><span style="color: #1E66F5;">created_at</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;2026-05-03 14:50:01&quot;</span><span style="color: #7C7F93;"> }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">]</span></span></code></pre><h3 id="safe-by-design">Safe by design</h3>
+<p>SELECT-only enforcement lives in the server, not in the adapters. Anything that doesn't start with <code>SELECT</code> (case-insensitive, after trim) is rejected — that even blocks CTE tricks like <code>WITH ... INSERT ... RETURNING</code>. Every adapter uses parameterized queries, never string-concatenated SQL. For an extra layer, point it at a read-only database role.</p>
+<h2 id="setup-for-different-tools">Setup for different tools</h2>
+<p>All clients launch the same binary; the difference is just where the config file lives. I prefer passing the URL through <code>DATABASE_URL</code> so it isn't visible in the args list.</p>
+<h3 id="claude-code-cli">Claude Code (CLI)</h3>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">claude</span><span style="color: #40A02B;"> mcp add db</span><span style="color: #EA76CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">  --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb</span><span style="color: #EA76CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">  -- /absolute/path/to/db-mcp</span></span></code></pre><h3 id="claude-desktop">Claude Desktop</h3>
+<p><strong>claude_desktop_config.json</strong> (macOS: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>, Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>):</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">mcpServers</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">db-mcp</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">type</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;stdio&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">command</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;/absolute/path/to/db-mcp&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">args</span><span style="color: #7C7F93;">&quot;: [],</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">env</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">        &quot;</span><span style="color: #1E66F5;">DATABASE_URL</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;postgres://user:pass@localhost:5432/mydb&quot;</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre>
+<p>Restart Claude and the tools appear.</p>
+<h3 id="opencode">OpenCode</h3>
+<p>In your <code>opencode.json</code> (project or <code>~/.config/opencode/opencode.json</code>):</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">$schema</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;https://opencode.ai/config.json&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">mcp</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">database</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">type</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;local&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">command</span><span style="color: #7C7F93;">&quot;: [</span><span style="color: #40A02B;">&quot;db-mcp&quot;</span><span style="color: #7C7F93;">,</span><span style="color: #40A02B;"> &quot;--database-url&quot;</span><span style="color: #7C7F93;">,</span><span style="color: #40A02B;"> &quot;sqlite:///home/me/work/data.sqlite&quot;</span><span style="color: #7C7F93;">],</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">enabled</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #FE640B;"> true</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre><h3 id="jan">Jan</h3>
+<p>Jan has built-in MCP support (Settings → MCP Servers). The equivalent config is a command + args + env entry:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">database</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">command</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;/absolute/path/to/db-mcp&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">args</span><span style="color: #7C7F93;">&quot;: [],</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">env</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">DATABASE_URL</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;postgres://prod.example.com:5432/analytics&quot;</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre><h3 id="zed">Zed</h3>
+<p>In <code>settings.json</code> (custom MCP servers live under <code>context_servers</code>, not <code>lsp</code>):</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #7C7F93;">{</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  &quot;</span><span style="color: #1E66F5;">context_servers</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    &quot;</span><span style="color: #1E66F5;">db-mcp</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">enabled</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #FE640B;"> true</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">remote</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #FE640B;"> false</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">command</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;/absolute/path/to/db-mcp&quot;</span><span style="color: #7C7F93;">,</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">args</span><span style="color: #7C7F93;">&quot;: [],</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      &quot;</span><span style="color: #1E66F5;">env</span><span style="color: #7C7F93;">&quot;: {</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">        &quot;</span><span style="color: #1E66F5;">DATABASE_URL</span><span style="color: #7C7F93;">&quot;:</span><span style="color: #40A02B;"> &quot;postgres://user:pass@localhost:5432/mydb&quot;</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">      }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">    }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">  }</span></span>
+<span class="giallo-l"><span style="color: #7C7F93;">}</span></span></code></pre><h2 id="real-world-scenarios">Real-world scenarios</h2>
+<h3 id="scenario-1-context-for-development">Scenario 1: context for development</h3>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>In Claude Code:</span></span>
+<span class="giallo-l"><span>&quot;Help me write a migration to add a new field.</span></span>
+<span class="giallo-l"><span>Check the current users table structure.&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>Claude:</span></span>
+<span class="giallo-l"><span>1. Calls db-mcp (describe_table) → gets current schema</span></span>
+<span class="giallo-l"><span>2. Sees existing fields and constraints</span></span>
+<span class="giallo-l"><span>3. Generates a correct migration for your actual database</span></span></code></pre><h3 id="scenario-2-data-analysis-in-opencode">Scenario 2: data analysis in OpenCode</h3>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>In OpenCode analyzing metrics:</span></span>
+<span class="giallo-l"><span>&quot;How many active users this month?</span></span>
+<span class="giallo-l"><span>What are the most popular features?&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>OpenCode uses db-mcp (query), the model sees real numbers</span></span>
+<span class="giallo-l"><span>and provides analysis grounded in actual data.</span></span></code></pre><h3 id="scenario-3-debugging-in-jan">Scenario 3: debugging in Jan</h3>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>Jan with db-mcp helps debug:</span></span>
+<span class="giallo-l"><span>&quot;Are there orders without user_id in the orders table?&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>Jan queries through db-mcp, sees there are 12 such records,</span></span>
+<span class="giallo-l"><span>suggests how to fix it.</span></span></code></pre><h2 id="installation">Installation</h2>
+<p>Quick install (Linux and macOS Apple Silicon) — auto-detects OS/arch, verifies the checksum, installs to <code>~/.local/bin</code> by default:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">curl</span><span style="color: #40A02B;"> --proto &#39;=https&#39; --tlsv1.2 -sSf</span><span style="color: #EA76CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">  https://raw.githubusercontent.com/zeslava/db-mcp/main/install.sh</span><span style="color: #179299;"> |</span><span style="color: #1E66F5;font-style: italic;"> sh</span></span></code></pre>
+<p>Or grab a release tarball manually (Linux x86_64/aarch64, macOS arm64, Windows x86_64):</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>TARGET</span><span style="color: #179299;">=</span><span style="color: #40A02B;">x86_64-unknown-linux-gnu</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">curl</span><span style="color: #40A02B;"> -sSL &quot;https://github.com/zeslava/db-mcp/releases/latest/download/db-mcp-</span><span>${TARGET}</span><span style="color: #40A02B;">.tar.gz&quot;</span><span style="color: #EA76CB;"> \</span></span>
+<span class="giallo-l"><span style="color: #179299;">  |</span><span style="color: #1E66F5;font-style: italic;"> tar</span><span style="color: #40A02B;"> -xz</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">install</span><span style="color: #40A02B;"> -m</span><span style="color: #FE640B;"> 755</span><span style="color: #40A02B;"> &quot;db-mcp-</span><span>${TARGET}</span><span style="color: #40A02B;">/db-mcp&quot; &quot;</span><span>$HOME</span><span style="color: #40A02B;">/.local/bin/db-mcp&quot;</span></span></code></pre>
+<p>Or build from source:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">git</span><span style="color: #40A02B;"> clone https://github.com/zeslava/db-mcp</span></span>
+<span class="giallo-l"><span style="color: #D20F39;font-style: italic;">cd</span><span style="color: #40A02B;"> db-mcp</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">cargo</span><span style="color: #40A02B;"> build --release</span></span>
+<span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">./target/release/db-mcp</span><span style="color: #40A02B;"> --database-url postgres://localhost/mydb</span></span></code></pre><h2 id="benefits-of-this-approach">Benefits of this approach</h2>
+<ul>
+<li>✅ One binary for four engines (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)</li>
+<li>✅ Works everywhere: Claude, OpenCode, Jan, Zed, any MCP client</li>
+<li>✅ No runtime overhead (no JS, Python) — pure Rust, static musl binary on Linux</li>
+<li>✅ Safe by design: SELECT-only, parameterized queries</li>
+<li>✅ Private: runs locally or in your infrastructure</li>
+<li>✅ Simple setup: just a database URL</li>
+</ul>
+<h2 id="what-s-next">What's next</h2>
+<p>Planned features:</p>
+<ul>
+<li>Query logging and audit trails</li>
+<li>Per-table access control (for more granular permissions)</li>
+<li>Query result caching</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer>
+    <p>2026</p>
+  </footer>
+</body>
+</html>

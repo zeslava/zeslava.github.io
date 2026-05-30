@@ -16,6 +16,25 @@
     <nav>
       <a href="{{ config.base_url }}">{{ config.title }}</a>
       <a href="{{ get_url(path='blog') }}">posts</a>
+      <div class="lang-switcher">
+        {% if lang == "ru" %}
+          {% set target_url = "" %}
+          {% if page and page.translations %}
+            {% for tr in page.translations %}{% if tr.lang == "en" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
+          {% elif section and section.translations %}
+            {% for tr in section.translations %}{% if tr.lang == "en" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
+          {% endif %}
+          {% if target_url %}<a href="{{ target_url }}">EN</a>{% else %}<a href="{{ config.base_url }}/en/">EN</a>{% endif %}
+        {% else %}
+          {% set target_url = "" %}
+          {% if page and page.translations %}
+            {% for tr in page.translations %}{% if tr.lang == "ru" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
+          {% elif section and section.translations %}
+            {% for tr in section.translations %}{% if tr.lang == "ru" %}{% set_global target_url = tr.permalink %}{% endif %}{% endfor %}
+          {% endif %}
+          {% if target_url %}<a href="{{ target_url }}">RU</a>{% else %}<a href="{{ config.base_url }}/">RU</a>{% endif %}
+        {% endif %}
+      </div>
     </nav>
   </header>
   <main>

@@ -2,4 +2,4 @@
 title = "Home"
 +++
 
-Writing about things I find interesting.
+Пишу о том, что мне интересно.
