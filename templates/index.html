@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="intro">
+  {{ section.content | safe }}
+</section>
+<section class="posts">
+  {% set blog = get_section(path="blog/_index.md") %}
+  {% for page in blog.pages | slice(end=5) %}
+  <article>
+    <time>{{ page.date | date(format="%Y-%m-%d") }}</time>
+    <a href="{{ page.permalink }}">{{ page.title }}</a>
+  </article>
+  {% endfor %}
+  {% if blog.pages | length > 5 %}
+  <a href="{{ get_url(path='blog') }}" class="all-posts">all posts →</a>
+  {% endif %}
+</section>
+{% endblock %}

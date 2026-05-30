@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ config.title }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ get_url(path='main.css') }}">
+  {% if page.description %}
+  <meta name="description" content="{{ page.description }}">
+  {% elif config.description %}
+  <meta name="description" content="{{ config.description }}">
+  {% endif %}
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ config.base_url }}">{{ config.title }}</a>
+      <a href="{{ get_url(path='blog') }}">posts</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>{{ now() | date(format="%Y") }}</p>
+  </footer>
+</body>
+</html>
