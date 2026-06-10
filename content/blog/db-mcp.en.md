@@ -1,5 +1,5 @@
 +++
-title = "db-mcp: one binary for all your databases"
+title = "db-mcp: connect your database to AI"
 date = 2026-05-30
 description = "A lightweight MCP server written in Rust that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately"
 +++
@@ -18,7 +18,7 @@ So I built **db-mcp** ([github](https://github.com/zeslava/db-mcp)) — a lightw
 At work, I often need to give Claude access to data: fetch information, analyze, provide context for scripting. Requirements were:
 - **Safe** (read-only, parameterized queries)
 - **Private** (runs locally, nothing sent to cloud)
-- **Universal** (not just Claude — I use OpenCode, Jan for different tasks)
+- **Universal** (not just Claude — I use OpenCode, Zed, Jan for different tasks)
 
 
 ## How it works
