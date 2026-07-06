@@ -11,6 +11,10 @@
         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
+        <loc>https://zeslava.github.io/blog/esp-rust-defmt/</loc>
+        <lastmod>2026-07-06</lastmod>
+    </url>
+    <url>
         <loc>https://zeslava.github.io/en/</loc>
     </url>
     <url>
@@ -19,5 +23,9 @@
     <url>
         <loc>https://zeslava.github.io/en/blog/db-mcp/</loc>
         <lastmod>2026-05-30</lastmod>
+    </url>
+    <url>
+        <loc>https://zeslava.github.io/en/blog/esp-rust-defmt/</loc>
+        <lastmod>2026-07-06</lastmod>
     </url>
 </urlset>

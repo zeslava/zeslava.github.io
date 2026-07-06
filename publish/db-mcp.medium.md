@@ -1,12 +1,20 @@
-+++
-title = "db-mcp: connect your database to AI"
-date = 2026-05-30
-description = "A lightweight MCP server written in Rust that lets Claude and other tools query PostgreSQL, MySQL, SQLite, and ClickHouse safely and privately"
-+++
+<!--
+MEDIUM PUBLISHING NOTES (delete before/while importing — not part of the article):
+- Best path: Medium "Import a story" with URL https://zeslava.github.io/en/blog/db-mcp/
+  so the canonical link points back to the original automatically.
+- If pasting manually: set the canonical link in story settings to the URL above.
+- Title (set in the editor, not in the body): db-mcp: connect your database to AI
+- Tags (up to 5): Rust, MCP, AI, Database, Developer Tools
+- Add a cover image at the top.
+- Medium does NOT render markdown tables — the tools table below is already a list.
+- Medium code blocks have no syntax highlighting and no language label.
+  For nicer formatting, replace long code blocks with GitHub Gist embeds.
+-->
 
 I needed a private utility for work and personal projects: read data from databases, but never write. Existing solutions weren't what I wanted — those that existed were JS/Python packages. I just needed a simple binary: download and run, without Node.js or other overhead. Plus, always nice to build something yourself :)
 
 So I built **db-mcp** ([github](https://github.com/zeslava/db-mcp)) — a lightweight Rust binary that:
+
 - Reads from PostgreSQL, MySQL/MariaDB, SQLite, and ClickHouse via URL scheme
 - Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client
 - Simple and safe by design: read-only (SELECT only), parameterized queries
@@ -16,16 +24,16 @@ So I built **db-mcp** ([github](https://github.com/zeslava/db-mcp)) — a lightw
 ## Why this was needed
 
 At work, I often need to give Claude access to data: fetch information, analyze, provide context for scripting. Requirements were:
+
 - **Safe** (read-only, parameterized queries)
 - **Private** (runs locally, nothing sent to cloud)
 - **Universal** (not just Claude — I use OpenCode, Zed, Jan for different tasks)
-
 
 ## How it works
 
 db-mcp is a stdio MCP server written in Rust. You point it at a database URL via the `--database-url` flag or the `DATABASE_URL` env var:
 
-```bash
+```
 db-mcp --database-url postgres://user:pass@localhost:5432/mydb
 db-mcp --database-url mysql://user:pass@localhost:3306/mydb
 db-mcp --database-url sqlite:///absolute/path/to/data.db
@@ -34,15 +42,13 @@ db-mcp --database-url clickhouse://default:pass@localhost:8123/default
 
 The server detects the engine from the URL scheme and connects. Then Claude/OpenCode/Jan can use three tools:
 
-| Tool | Params | What it does |
-|------|--------|--------------|
-| `list_tables` | — | List user tables |
-| `describe_table` | `table`, `schema?` | Columns, types, nullability |
-| `query` | `sql` | Run a SELECT, returns JSON rows |
+- **`list_tables`** — no params. Lists user tables.
+- **`describe_table`** — params: `table`, `schema?`. Returns columns, types, nullability.
+- **`query`** — param: `sql`. Runs a SELECT, returns JSON rows.
 
 A `query` call returns plain JSON, so the model gets real values to reason about:
 
-```json
+```
 [
   { "id": 1, "email": "ada@example.com", "created_at": "2026-05-01 09:12:33" },
   { "id": 2, "email": "linus@example.com", "created_at": "2026-05-03 14:50:01" }
@@ -59,15 +65,17 @@ All clients launch the same binary; the difference is just where the config file
 
 ### Claude Code (CLI)
 
-**cli**
-```bash
+cli:
+
+```
 claude mcp add db \
   --env DATABASE_URL=postgres://user:pass@localhost:5432/mydb \
   -- /absolute/path/to/db-mcp
 ```
 
-**claude.json**
-```json
+claude.json:
+
+```
 {
   "mcpServers": {
     "db-mcp": {
@@ -88,7 +96,7 @@ Restart Claude and the tools appear.
 
 In your `opencode.json` (project or `~/.config/opencode/opencode.json`):
 
-```json
+```
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
@@ -105,7 +113,7 @@ In your `opencode.json` (project or `~/.config/opencode/opencode.json`):
 
 Jan has built-in MCP support (Settings → MCP Servers). The equivalent config is a command + args + env entry:
 
-```json
+```
 {
   "database": {
     "command": "/absolute/path/to/db-mcp",
@@ -121,7 +129,7 @@ Jan has built-in MCP support (Settings → MCP Servers). The equivalent config i
 
 In `settings.json` (custom MCP servers live under `context_servers`, not `lsp`):
 
-```json
+```
 {
   "context_servers": {
     "db-mcp": {
@@ -177,14 +185,14 @@ suggests how to fix it.
 
 Quick install (Linux and macOS Apple Silicon) — auto-detects OS/arch, verifies the checksum, installs to `~/.local/bin` by default:
 
-```bash
+```
 curl --proto '=https' --tlsv1.2 -sSf \
   https://raw.githubusercontent.com/zeslava/db-mcp/main/install.sh | sh
 ```
 
 Or grab a release tarball manually (Linux x86_64/aarch64, macOS arm64, Windows x86_64):
 
-```bash
+```
 TARGET=x86_64-unknown-linux-gnu
 curl -sSL "https://github.com/zeslava/db-mcp/releases/latest/download/db-mcp-${TARGET}.tar.gz" \
   | tar -xz
@@ -193,7 +201,7 @@ install -m 755 "db-mcp-${TARGET}/db-mcp" "$HOME/.local/bin/db-mcp"
 
 Or build from source:
 
-```bash
+```
 git clone https://github.com/zeslava/db-mcp
 cd db-mcp
 cargo build --release
@@ -202,12 +210,12 @@ cargo build --release
 
 ## Benefits of this approach
 
-- ✅ One binary for four engines (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)
-- ✅ Works everywhere: Claude, OpenCode, Jan, Zed, any MCP client
-- ✅ No runtime overhead (no JS, Python) — pure Rust, static musl binary on Linux
-- ✅ Safe by design: SELECT-only, parameterized queries
-- ✅ Private: runs locally or in your infrastructure
-- ✅ Simple setup: just a database URL
+- One binary for four engines (PostgreSQL, MySQL/MariaDB, SQLite, ClickHouse)
+- Works everywhere: Claude, OpenCode, Jan, Zed, any MCP client
+- No runtime overhead (no JS, Python) — pure Rust, static musl binary on Linux
+- Safe by design: SELECT-only, parameterized queries
+- Private: runs locally or in your infrastructure
+- Simple setup: just a database URL
 
 ## What's next
 
@@ -215,3 +223,7 @@ cargo build --release
 - Query logging and audit trails
 - Per-table access control (for more granular permissions)
 - Server mode
+
+---
+
+*If db-mcp sounds useful, star it on [GitHub](https://github.com/zeslava/db-mcp) — issues and PRs welcome.*
