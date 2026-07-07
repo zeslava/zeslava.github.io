@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://zeslava.github.io/sitemap.xml
+Sitemap: https://domdev.su/sitemap.xml

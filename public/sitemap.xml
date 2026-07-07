@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://zeslava.github.io/</loc>
+        <loc>https://domdev.su/</loc>
     </url>
     <url>
-        <loc>https://zeslava.github.io/blog/</loc>
+        <loc>https://domdev.su/blog/</loc>
     </url>
     <url>
-        <loc>https://zeslava.github.io/blog/db-mcp/</loc>
+        <loc>https://domdev.su/blog/db-mcp/</loc>
         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
-        <loc>https://zeslava.github.io/blog/esp-rust-defmt/</loc>
+        <loc>https://domdev.su/blog/esp-rust-defmt/</loc>
         <lastmod>2026-07-06</lastmod>
     </url>
     <url>
-        <loc>https://zeslava.github.io/en/</loc>
+        <loc>https://domdev.su/en/</loc>
     </url>
     <url>
-        <loc>https://zeslava.github.io/en/blog/</loc>
+        <loc>https://domdev.su/en/blog/</loc>
     </url>
     <url>
-        <loc>https://zeslava.github.io/en/blog/db-mcp/</loc>
+        <loc>https://domdev.su/en/blog/db-mcp/</loc>
         <lastmod>2026-05-30</lastmod>
     </url>
     <url>
-        <loc>https://zeslava.github.io/en/blog/esp-rust-defmt/</loc>
+        <loc>https://domdev.su/en/blog/esp-rust-defmt/</loc>
         <lastmod>2026-07-06</lastmod>
     </url>
 </urlset>
