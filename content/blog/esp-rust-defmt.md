@@ -6,7 +6,7 @@ description = "Заметка по настройке defmt"
 
 # Настройка defmt на ESP32-C6 (esp-hal + probe-rs)
 
-Замека по переходу с `rtt-target` на `defmt` для логирования через RTT.
+Заметка по переходу с `rtt-target` на `defmt` для логирования через RTT.
 
 ## 1. Зависимости
 
@@ -29,7 +29,7 @@ defmt version found, but no `.defmt` section - check your linker configuration
 
 Причина: линкер-скрипт `defmt.x` (идёт вместе с крейтом `defmt-rtt`) не подключён.
 
-Фикс — добавить флаг в `.cargo/config.toml`:
+Фикс: добавить флаг в `.cargo/config.toml`:
 
 ```toml
 [build]
@@ -89,7 +89,7 @@ defmt::timestamp!("");
 DEFMT_LOG=info cargo run --release
 ```
 
-Чтобы не выставлять переменную каждый раз, нужно прописать её в `.cargo/config.toml`:
+Чтобы не выставлять переменную каждый раз, можно прописать её в `.cargo/config.toml`:
 
 ```toml
 [env]

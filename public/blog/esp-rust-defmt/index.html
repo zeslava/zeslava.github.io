@@ -41,7 +41,7 @@
   </header>
   <div class="content">
     <h1 id="nastroika-defmt-na-esp32-c6-esp-hal-probe-rs">Настройка defmt на ESP32-C6 (esp-hal + probe-rs)</h1>
-<p>Замека по переходу с <code>rtt-target</code> на <code>defmt</code> для логирования через RTT.</p>
+<p>Заметка по переходу с <code>rtt-target</code> на <code>defmt</code> для логирования через RTT.</p>
 <h2 id="1-zavisimosti">1. Зависимости</h2>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="toml"><span class="giallo-l"><span style="color: #7C7F93;">[</span><span>dependencies</span><span style="color: #7C7F93;">]</span></span>
 <span class="giallo-l"><span>defmt</span><span style="color: #179299;">     =</span><span style="color: #40A02B;"> &quot;1.1.1&quot;</span></span>
@@ -52,7 +52,7 @@
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>Error: Failed to parse defmt data</span></span>
 <span class="giallo-l"><span>defmt version found, but no `.defmt` section - check your linker configuration</span></span></code></pre>
 <p>Причина: линкер-скрипт <code>defmt.x</code> (идёт вместе с крейтом <code>defmt-rtt</code>) не подключён.</p>
-<p>Фикс — добавить флаг в <code>.cargo/config.toml</code>:</p>
+<p>Фикс: добавить флаг в <code>.cargo/config.toml</code>:</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="toml"><span class="giallo-l"><span style="color: #7C7F93;">[</span><span>build</span><span style="color: #7C7F93;">]</span></span>
 <span class="giallo-l"><span>rustflags</span><span style="color: #179299;"> =</span><span style="color: #7C7F93;"> [</span></span>
 <span class="giallo-l"><span style="color: #40A02B;">  &quot;-C&quot;</span><span style="color: #7C7F93;">,</span><span style="color: #40A02B;"> &quot;link-arg=-Tdefmt.x&quot;</span><span style="color: #7C7F93;">,</span></span>
@@ -80,7 +80,7 @@
 По умолчанию уровень <code>info</code> не проходит.</p>
 <p>Быстрая проверка:</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>DEFMT_LOG</span><span style="color: #179299;">=</span><span style="color: #40A02B;">info</span><span style="color: #1E66F5;font-style: italic;"> cargo</span><span style="color: #40A02B;"> run --release</span></span></code></pre>
-<p>Чтобы не выставлять переменную каждый раз, нужно прописать её в <code>.cargo/config.toml</code>:</p>
+<p>Чтобы не выставлять переменную каждый раз, можно прописать её в <code>.cargo/config.toml</code>:</p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="toml"><span class="giallo-l"><span style="color: #7C7F93;">[</span><span>env</span><span style="color: #7C7F93;">]</span></span>
 <span class="giallo-l"><span>DEFMT_LOG</span><span style="color: #179299;"> =</span><span style="color: #40A02B;"> &quot;info&quot;</span></span></code></pre><h2 id="itogovyi-chek-list">Итоговый чек-лист</h2>
 <ul>
