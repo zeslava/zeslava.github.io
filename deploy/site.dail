@@ -1,0 +1,12 @@
+FROM 15.0-RELEASE
+
+RUN pkg install -y nginx
+
+COPY ../public/ /usr/local/www/site/
+COPY nginx.conf /usr/local/etc/nginx/nginx.conf
+
+SERVICE nginx --no-user
+
+LOG /var/log/nginx/access.log
+
+EXPOSE 8080:80
