@@ -15,12 +15,11 @@ zola check        # check links and templates
 Static site built with [Zola](https://www.getzola.org/). Default language is **Russian**; English is a secondary language at `/en/`.
 
 **Content files:**
-- `content/_index.md` — Russian homepage intro
-- `content/_index.en.md` — English homepage intro
-- `content/blog/_index.md` / `_index.en.md` — blog section roots
-- Posts: `content/blog/slug.md` (Russian) + `content/blog/slug.en.md` (English)
+- `content/_index.md` — Russian homepage: intro + list of all posts (root section)
+- `content/_index.en.md` — English homepage: intro + list of all posts
+- Posts: `content/slug.md` (Russian) + `content/slug.en.md` (English)
 
-**Templates** (`templates/`): `base.html` → layout with lang switcher; `index.html` → homepage with last 5 posts; `section.html` → blog list; `page.html` → post.
+**Templates** (`templates/`): `base.html` → layout with lang switcher; `index.html` → homepage intro + post list (renders `section.pages`); `page.html` → post.
 
 **Styles:** `sass/main.scss` compiled automatically by Zola.
 
@@ -28,7 +27,7 @@ Static site built with [Zola](https://www.getzola.org/). Default language is **R
 
 ## Multilingual conventions
 
-- Russian content: `filename.md`, accessed at `/blog/slug/`
-- English content: `filename.en.md`, accessed at `/en/blog/slug/`
+- Russian content: `filename.md`, accessed at `/slug/`
+- English content: `filename.en.md`, accessed at `/en/slug/`
 - The `lang` variable is available in templates (`{% if lang == "en" %}`)
-- To load the correct blog section in templates: use `blog/_index.en.md` for English, `blog/_index.md` for Russian
+- Root sections (`content/_index.md` / `_index.en.md`) have `sort_by = "date"` so posts list in reverse-chronological order

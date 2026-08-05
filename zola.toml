@@ -1,5 +1,5 @@
 base_url = "https://domdev.su"
-title = "zeslava"
+title = "domdev"
 description = ""
 default_language = "ru"
 
@@ -10,7 +10,7 @@ compile_sass = true
 build_search_index = false
 
 [languages.en]
-title = "zeslava"
+title = "domdev"
 description = ""
 
 [markdown]
