@@ -11,4 +11,4 @@ SERVICE nginx -- /usr/local/sbin/nginx
 
 LOG /var/log/nginx/access.log
 
-EXPOSE 8080:80
+EXPOSE 8080
