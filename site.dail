@@ -3,7 +3,7 @@ FROM 15.0-RELEASE
 RUN pkg install -y nginx
 
 COPY --chown=www:www ./public/ /usr/local/www/site/
-COPY ./dail/nginx.conf /usr/local/etc/nginx/nginx.conf
+COPY --chown=www:www ./dail/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 SERVICE nginx --no-user
 
