@@ -5,7 +5,7 @@ RUN pkg install -y nginx
 COPY --chown=nginx:nginx ./public/ /usr/local/www/site/
 COPY --chown=nginx:nginx ./dail/nginx.conf /usr/local/etc/nginx/nginx.conf
 
-SERVICE nginx
+SERVICE nginx -- /usr/local/sbin/nginx -g "daemon off;"
 
 LOG /var/log/nginx/access.log
 
