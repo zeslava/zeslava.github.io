@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>transmission on a freebsd server — domdev</title>
+        <link rel="stylesheet" href="https://domdev.su/main.css" />
+        <link
+            rel="icon"
+            href="https://domdev.su/favicon.svg"
+            type="image/svg+xml"
+        />
+        <link
+            rel="icon"
+            href="https://domdev.su/favicon.png"
+            type="image/png"
+            sizes="400x400"
+        />
+        <link rel="apple-touch-icon" href="https://domdev.su/favicon.png" />
+        
+        <meta name="description" content="Notes on setting up transmission on a freebsd server" />
+        
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="https:&#x2F;&#x2F;domdev.su">domdev</a>
+                <div class="lang-switcher">
+                         <a href="https:&#x2F;&#x2F;domdev.su&#x2F;transmission-freebsd-server&#x2F;">RU</a> 
+                </div>
+            </nav>
+        </header>
+        <main>
+<article class="post">
+  <header>
+    <h1>transmission on a freebsd server</h1>
+    <time>2026-08-05</time>
+  </header>
+  <div class="content">
+    <h1 id="installation">Installation</h1>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">pkg</span><span style="color: #40A02B;"> install transmission-daemon transmission-web transmission-cli</span></span></code></pre>
+<p><code>daemon</code> - required to install the service</p>
+<p><code>web</code> - installs the web interface</p>
+<p><code>cli</code> - for management</p>
+<h1 id="configuration">Configuration</h1>
+<h2 id="enabling-the-service-daemon">Enabling the service (daemon)</h2>
+<p>Via <code>sysrc</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">sysrc</span><span style="color: #40A02B;"> transmission_enable=&quot;YES&quot;</span></span></code></pre>
+<p>or manually add to <code>/etc/rc.conf</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>transmission_enable</span><span style="color: #179299;">=</span><span style="color: #40A02B;">&quot;YES&quot;</span></span></code></pre><h2 id="configuring-settings-json">Configuring <code>settings.json</code></h2>
+<p>The config file is located at <code>/usr/local/etc/transmission/home/settings.json</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>⚠️ Important:</span></span>
+<span class="giallo-l"><span>Edit the file only while the service is stopped (service transmission stop),</span></span>
+<span class="giallo-l"><span>otherwise Transmission will reset all changes.</span></span></code></pre>
+<p>Some values in <code>settings.json</code> are set via rc.conf variables; the default values are located at <code>/usr/local/etc/rc.d/transmission</code>.
+A useful file describing all the variables, what they do, and their default values.</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>⚠️ Important:</span></span>
+<span class="giallo-l"><span>Values are taken from the variables, so if you set a value in settings.json,</span></span>
+<span class="giallo-l"><span>transmission may overwrite it</span></span></code></pre><h2 id="configuring-the-download-directory">Configuring the download directory</h2>
+<p>The download directory is set via a variable in <code>rc.conf</code>:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>transmission_download_dir</span><span style="color: #179299;">=</span><span style="color: #40A02B;">&quot;/mnt/transmission/downloads&quot;</span></span></code></pre>
+<p>Default is <code>/usr/local/etc/transmission/home/Downloads</code></p>
+<h2 id="access-configuration">Access configuration</h2>
+<h3 id="download-directory-permissions">Download directory permissions</h3>
+<p>By default transmission runs under the transmission user and group, so the download directory permissions need to be set:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">chown</span><span style="color: #40A02B;"> -R transmission:transmission /mnt/transmission/downloads</span></span></code></pre>
+<p>You can also add yourself to the transmission group:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">pw</span><span style="color: #40A02B;"> groupmod transmission -m</span><span> $USER</span></span></code></pre><h3 id="login-password-authentication">Login/password authentication</h3>
+<p>You can add login/password access:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-authentication-required&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-username&quot;</span><span>: </span><span style="color: #40A02B;">&quot;your_login&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-password&quot;</span><span>: </span><span style="color: #40A02B;">&quot;your_password&quot;</span><span>,</span></span></code></pre>
+<p>If this is on a home network and login/password isn't needed, it can be disabled:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-authentication-required&quot;</span><span>: </span><span style="color: #FE640B;">false</span><span>,</span></span></code></pre><h3 id="address-restrictions">Address restrictions</h3>
+<p>You can allow access from specific devices on the network,
+set via the <code>rpc-whitelist</code> parameter as a comma-separated string, with <code>rpc-whitelist-enabled</code> turned on:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-whitelist&quot;</span><span>: </span><span style="color: #40A02B;">&quot;127.0.0.1,192.168.1.2&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-whitelist-enabled&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span></code></pre>
+<p>There's a similar setting, but for restricting the addresses at which the web interface will open.</p>
+<p><code>rpc-host-whitelist</code> (note the word host in the name), also set as a comma-separated string:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-host-whitelist&quot;</span><span>: </span><span style="color: #40A02B;">&quot;transmission.lan,192.168.1.10&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-host-whitelist-enabled&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span></code></pre>
+  </div>
+</article>
+</main>
+        <footer>
+            <p>2026</p>
+        </footer>
+    </body>
+</html>

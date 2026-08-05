@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>transmission на сервере freebsd — domdev</title>
+        <link rel="stylesheet" href="https://domdev.su/main.css" />
+        <link
+            rel="icon"
+            href="https://domdev.su/favicon.svg"
+            type="image/svg+xml"
+        />
+        <link
+            rel="icon"
+            href="https://domdev.su/favicon.png"
+            type="image/png"
+            sizes="400x400"
+        />
+        <link rel="apple-touch-icon" href="https://domdev.su/favicon.png" />
+        
+        <meta name="description" content="Заметка по настройке transmission на сервере freebsd" />
+        
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="https:&#x2F;&#x2F;domdev.su">domdev</a>
+                <div class="lang-switcher">
+                         
+                    <a href="https:&#x2F;&#x2F;domdev.su&#x2F;en&#x2F;transmission-freebsd-server&#x2F;">EN</a>
+                     
+                </div>
+            </nav>
+        </header>
+        <main>
+<article class="post">
+  <header>
+    <h1>transmission на сервере freebsd</h1>
+    <time>2026-08-05</time>
+  </header>
+  <div class="content">
+    <h1 id="ustanovka">Установка</h1>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">pkg</span><span style="color: #40A02B;"> install transmission-daemon transmission-web transmission-cli</span></span></code></pre>
+<p><code>daemon</code> - нужен для установки службы</p>
+<p><code>web</code> - устанавливает web интерфейс</p>
+<p><code>cli</code> - для управления</p>
+<h1 id="nastroika">Настройка</h1>
+<h2 id="vkliuchenie-servisa-demona">Включение сервиса(демона)</h2>
+<p>Через <code>sysrc</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">sysrc</span><span style="color: #40A02B;"> transmission_enable=&quot;YES&quot;</span></span></code></pre>
+<p>либо руками прописать в <code>/etc/rc.conf</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>transmission_enable</span><span style="color: #179299;">=</span><span style="color: #40A02B;">&quot;YES&quot;</span></span></code></pre><h2 id="nastroika-settings-json">Настройка <code>settings.json</code></h2>
+<p>Файл конфигурации находится тут <code>/usr/local/etc/transmission/home/settings.json</code></p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>⚠️ Важно: </span></span>
+<span class="giallo-l"><span>Редактировать файл только при остановленной службе (service transmission stop), </span></span>
+<span class="giallo-l"><span>иначе Transmission сбросит все изменения.</span></span></code></pre>
+<p>Часть значений в <code>settings.json</code> определяется через переменные rc.conf, значения по умолчанию нахоядтся тут <code>/usr/local/etc/rc.d/transmission</code>.
+Полезный файл с описанием всех переменных, для чего они и какие значения по умолчанию.</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="plain"><span class="giallo-l"><span>⚠️ Важно: </span></span>
+<span class="giallo-l"><span>Значения берутся из переменных, поэтому, если задать значение в settings.json, </span></span>
+<span class="giallo-l"><span>transmission может его перезаписать</span></span></code></pre><h2 id="nastroika-direktorii-dlia-zagruzok">Настройка директории для загрузок</h2>
+<p>Директория для загрузок настраивается через переменную в <code>rc.conf</code>:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span>transmission_download_dir</span><span style="color: #179299;">=</span><span style="color: #40A02B;">&quot;/mnt/transmission/downloads&quot;</span></span></code></pre>
+<p>По умолчанию <code>/usr/local/etc/transmission/home/Downloads</code></p>
+<h2 id="nastroika-dostupa">Настройка доступа</h2>
+<h3 id="prava-na-direktoriiu-zagruzok">Права на директорию загрузок</h3>
+<p>По умолчанию transmission работает под пользователем и группой transmission, поэтому для директории загрузок надо выставить права:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">chown</span><span style="color: #40A02B;"> -R transmission:transmission /mnt/transmission/downloads</span></span></code></pre>
+<p>Можно так же добавить себя в группу transmission:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">pw</span><span style="color: #40A02B;"> groupmod transmission -m</span><span> $USER</span></span></code></pre><h3 id="autentifikatsiia-po-loginu-proliu">Аутентификация по логину/пролю</h3>
+<p>Можно добавить доступ по логину/паролю:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-authentication-required&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-username&quot;</span><span>: </span><span style="color: #40A02B;">&quot;ваш_логин&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-password&quot;</span><span>: </span><span style="color: #40A02B;">&quot;ваш_пароль&quot;</span><span>,</span></span></code></pre>
+<p>Если это в домашней сети и нет смысла во входе по логину/паролю, то можно отключить</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-authentication-required&quot;</span><span>: </span><span style="color: #FE640B;">false</span><span>,</span></span></code></pre><h3 id="ogranichenie-po-adresam">Ограничение по адресам</h3>
+<p>Можно настроить доступ с определенных устройств в сети,
+задается в параметре <code>rpc-whitelist</code> строкой со значениями через запятую и включением <code>rpc-whitelist-enabled</code>:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-whitelist&quot;</span><span>: </span><span style="color: #40A02B;">&quot;127.0.0.1,192.168.1.2&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-whitelist-enabled&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span></code></pre>
+<p>Есть аналогичная настройка, но для ограничения адресов, по которым будет открываться web интерфейс.</p>
+<p><code>rpc-host-whitelist</code> (слово host в названии), задается так же строкой со значениями через запятую:</p>
+<pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="json"><span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-host-whitelist&quot;</span><span>: </span><span style="color: #40A02B;">&quot;transmission.lan,192.168.1.10&quot;</span><span>,</span></span>
+<span class="giallo-l"><span style="color: #40A02B;">&quot;rpc-host-whitelist-enabled&quot;</span><span>: </span><span style="color: #FE640B;">true</span><span>,</span></span></code></pre>
+  </div>
+</article>
+</main>
+        <footer>
+            <p>2026</p>
+        </footer>
+    </body>
+</html>
