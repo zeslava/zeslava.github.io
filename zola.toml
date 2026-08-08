@@ -1,7 +1,10 @@
 base_url = "https://domdev.su"
 title = "domdev"
-description = ""
+description = "Пишу о том, что мне интересно: разработка, системное администрирование, железо."
 default_language = "ru"
+
+generate_feeds = true
+feed_filenames = ["atom.xml"]
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
@@ -11,7 +14,8 @@ build_search_index = false
 
 [languages.en]
 title = "domdev"
-description = ""
+description = "Writing about things I find interesting: development, systems administration, hardware."
+generate_feeds = true
 
 [markdown]
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ lang }}">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,11 +17,51 @@
             sizes="120x120"
         />
         <link rel="apple-touch-icon" href="{{ get_url(path='favicon.png') }}" />
-        {% if page.description %}
-        <meta name="description" content="{{ page.description }}" />
-        {% elif config.description %}
-        <meta name="description" content="{{ config.description }}" />
+        {% if page %} {% set current = page %} {% elif section %} {% set current
+        = section %} {% endif %} {% if page and page.description %} {% set
+        meta_description = page.description %} {% else %} {% set
+        meta_description = config.description %} {% endif %} {% if page and
+        page.title %} {% set meta_title = page.title ~ " — " ~ config.title %}
+        {% else %} {% set meta_title = config.title %} {% endif %} {% if
+        meta_description %}
+        <meta name="description" content="{{ meta_description }}" />
+        {% endif %} {% if current %}
+        <link rel="canonical" href="{{ current.permalink | safe }}" />
+        <meta property="og:type" content="{% if page %}article{% else %}website{% endif %}" />
+        <meta property="og:url" content="{{ current.permalink | safe }}" />
+        <meta property="og:site_name" content="{{ config.title }}" />
+        <meta property="og:locale" content="{% if lang == "ru" %}ru_RU{% else %}en_US{% endif %}" />
+        <meta property="og:title" content="{{ meta_title }}" />
+        {% if meta_description %}
+        <meta property="og:description" content="{{ meta_description }}" />
         {% endif %}
+        <meta property="og:image" content="{{ get_url(path='favicon.png') }}" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="{{ meta_title }}" />
+        {% if meta_description %}
+        <meta name="twitter:description" content="{{ meta_description }}" />
+        {% endif %}
+        <meta name="twitter:image" content="{{ get_url(path='favicon.png') }}" />
+        {% endif %} {% if config.generate_feeds %}
+        <link
+            rel="alternate"
+            type="application/atom+xml"
+            title="{{ config.title }}"
+            href="{{ get_url(path='atom.xml', lang=lang) }}"
+        />
+        {% endif %} {% if current %} {% for tr in current.translations %}
+        <link
+            rel="alternate"
+            hreflang="{{ tr.lang }}"
+            href="{{ tr.permalink | safe }}"
+        />
+        {% if tr.lang == "ru" %}
+        <link
+            rel="alternate"
+            hreflang="x-default"
+            href="{{ tr.permalink | safe }}"
+        />
+        {% endif %} {% endfor %} {% endif %}
     </head>
     <body>
         <header>

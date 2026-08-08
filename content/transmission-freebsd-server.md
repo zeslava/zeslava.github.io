@@ -4,7 +4,7 @@ date = 2026-08-05
 description = "Заметка по настройке transmission на сервере freebsd"
 +++
 
-# Установка
+## Установка
 
 ```shell
 pkg install transmission-daemon transmission-web transmission-cli
@@ -16,7 +16,7 @@ pkg install transmission-daemon transmission-web transmission-cli
 
 `cli` - для управления
 
-# Настройка
+## Настройка
 
 ## Включение сервиса(демона)
 

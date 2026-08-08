@@ -17,9 +17,52 @@
             sizes="120x120"
         />
         <link rel="apple-touch-icon" href="https://domdev.su/favicon.png" />
-        
+               
+         
         <meta name="description" content="A note on setting up defmt" />
+         
+        <link rel="canonical" href="https://domdev.su/en/esp-rust-defmt/" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://domdev.su/en/esp-rust-defmt/" />
+        <meta property="og:site_name" content="domdev" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:title" content="esp rust: setting up defmt — domdev" />
         
+        <meta property="og:description" content="A note on setting up defmt" />
+        
+        <meta property="og:image" content="https://domdev.su/favicon.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="esp rust: setting up defmt — domdev" />
+        
+        <meta name="twitter:description" content="A note on setting up defmt" />
+        
+        <meta name="twitter:image" content="https://domdev.su/favicon.png" />
+         
+        <link
+            rel="alternate"
+            type="application/atom+xml"
+            title="domdev"
+            href="https://domdev.su/en/atom.xml"
+        />
+          
+        <link
+            rel="alternate"
+            hreflang="ru"
+            href="https://domdev.su/esp-rust-defmt/"
+        />
+        
+        <link
+            rel="alternate"
+            hreflang="x-default"
+            href="https://domdev.su/esp-rust-defmt/"
+        />
+         
+        <link
+            rel="alternate"
+            hreflang="en"
+            href="https://domdev.su/en/esp-rust-defmt/"
+        />
+          
     </head>
     <body>
         <header>
@@ -37,7 +80,7 @@
     <time>2026-07-06</time>
   </header>
   <div class="content">
-    <h1 id="setting-up-defmt-on-esp32-c6-esp-hal-probe-rs">Setting up defmt on ESP32-C6 (esp-hal + probe-rs)</h1>
+    <h2 id="setting-up-defmt-on-esp32-c6-esp-hal-probe-rs">Setting up defmt on ESP32-C6 (esp-hal + probe-rs)</h2>
 <p>Notes on migrating from <code>rtt-target</code> to <code>defmt</code> for logging over RTT.</p>
 <h2 id="1-dependencies">1. Dependencies</h2>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="toml"><span class="giallo-l"><span style="color: #7C7F93;">[</span><span>dependencies</span><span style="color: #7C7F93;">]</span></span>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,9 +17,52 @@
             sizes="120x120"
         />
         <link rel="apple-touch-icon" href="https://domdev.su/favicon.png" />
-        
+               
+         
         <meta name="description" content="Заметка по настройке transmission на сервере freebsd" />
+         
+        <link rel="canonical" href="https://domdev.su/transmission-freebsd-server/" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://domdev.su/transmission-freebsd-server/" />
+        <meta property="og:site_name" content="domdev" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:title" content="transmission на сервере freebsd — domdev" />
         
+        <meta property="og:description" content="Заметка по настройке transmission на сервере freebsd" />
+        
+        <meta property="og:image" content="https://domdev.su/favicon.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="transmission на сервере freebsd — domdev" />
+        
+        <meta name="twitter:description" content="Заметка по настройке transmission на сервере freebsd" />
+        
+        <meta name="twitter:image" content="https://domdev.su/favicon.png" />
+         
+        <link
+            rel="alternate"
+            type="application/atom+xml"
+            title="domdev"
+            href="https://domdev.su/atom.xml"
+        />
+          
+        <link
+            rel="alternate"
+            hreflang="en"
+            href="https://domdev.su/en/transmission-freebsd-server/"
+        />
+         
+        <link
+            rel="alternate"
+            hreflang="ru"
+            href="https://domdev.su/transmission-freebsd-server/"
+        />
+        
+        <link
+            rel="alternate"
+            hreflang="x-default"
+            href="https://domdev.su/transmission-freebsd-server/"
+        />
+          
     </head>
     <body>
         <header>
@@ -39,12 +82,12 @@
     <time>2026-08-05</time>
   </header>
   <div class="content">
-    <h1 id="ustanovka">Установка</h1>
+    <h2 id="ustanovka">Установка</h2>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">pkg</span><span style="color: #40A02B;"> install transmission-daemon transmission-web transmission-cli</span></span></code></pre>
 <p><code>daemon</code> - нужен для установки службы</p>
 <p><code>web</code> - устанавливает web интерфейс</p>
 <p><code>cli</code> - для управления</p>
-<h1 id="nastroika">Настройка</h1>
+<h2 id="nastroika">Настройка</h2>
 <h2 id="vkliuchenie-servisa-demona">Включение сервиса(демона)</h2>
 <p>Через <code>sysrc</code></p>
 <pre class="giallo" style="color: #4C4F69; background-color: #EFF1F5;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #1E66F5;font-style: italic;">sysrc</span><span style="color: #40A02B;"> transmission_enable=&quot;YES&quot;</span></span></code></pre>

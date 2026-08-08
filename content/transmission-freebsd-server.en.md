@@ -4,7 +4,7 @@ date = 2026-08-05
 description = "Notes on setting up transmission on a freebsd server"
 +++
 
-# Installation
+## Installation
 
 ```shell
 pkg install transmission-daemon transmission-web transmission-cli
@@ -16,7 +16,7 @@ pkg install transmission-daemon transmission-web transmission-cli
 
 `cli` - for management
 
-# Configuration
+## Configuration
 
 ## Enabling the service (daemon)
 

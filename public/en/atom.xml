@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>domdev</title>
+    <subtitle>Writing about things I find interesting: development, systems administration, hardware.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://domdev.su/en/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://domdev.su"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-08-05T00:00:00+00:00</updated>
+    <id>https://domdev.su/en/atom.xml</id>
+    <entry xml:lang="en">
+        <title>transmission on a freebsd server</title>
+        <published>2026-08-05T00:00:00+00:00</published>
+        <updated>2026-08-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/en/transmission-freebsd-server/"/>
+        <id>https://domdev.su/en/transmission-freebsd-server/</id>
+        
+        <content type="html" xml:base="https://domdev.su/en/transmission-freebsd-server/">&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;&#x2F;h2&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;pkg&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; install transmission-daemon transmission-web transmission-cli&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;daemon&lt;&#x2F;code&gt; - required to install the service&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;web&lt;&#x2F;code&gt; - installs the web interface&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;cli&lt;&#x2F;code&gt; - for management&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;configuration&quot;&gt;Configuration&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;enabling-the-service-daemon&quot;&gt;Enabling the service (daemon)&lt;&#x2F;h2&gt;
+&lt;p&gt;Via &lt;code&gt;sysrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;sysrc&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; transmission_enable=&amp;quot;YES&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;or manually add to &lt;code&gt;&#x2F;etc&#x2F;rc.conf&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission_enable&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;YES&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;configuring-settings-json&quot;&gt;Configuring &lt;code&gt;settings.json&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;The config file is located at &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;transmission&#x2F;home&#x2F;settings.json&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;⚠️ Important:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Edit the file only while the service is stopped (service transmission stop),&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;otherwise Transmission will reset all changes.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Some values in &lt;code&gt;settings.json&lt;&#x2F;code&gt; are set via rc.conf variables; the default values are located at &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;rc.d&#x2F;transmission&lt;&#x2F;code&gt;.
+A useful file describing all the variables, what they do, and their default values.&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;⚠️ Important:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Values are taken from the variables, so if you set a value in settings.json,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission may overwrite it&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;configuring-the-download-directory&quot;&gt;Configuring the download directory&lt;&#x2F;h2&gt;
+&lt;p&gt;The download directory is set via a variable in &lt;code&gt;rc.conf&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission_download_dir&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&#x2F;mnt&#x2F;transmission&#x2F;downloads&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Default is &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;transmission&#x2F;home&#x2F;Downloads&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;access-configuration&quot;&gt;Access configuration&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;download-directory-permissions&quot;&gt;Download directory permissions&lt;&#x2F;h3&gt;
+&lt;p&gt;By default transmission runs under the transmission user and group, so the download directory permissions need to be set:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;chown&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -R transmission:transmission &#x2F;mnt&#x2F;transmission&#x2F;downloads&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You can also add yourself to the transmission group:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;pw&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; groupmod transmission -m&lt;&#x2F;span&gt;&lt;span&gt; $USER&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;login-password-authentication&quot;&gt;Login&#x2F;password authentication&lt;&#x2F;h3&gt;
+&lt;p&gt;You can add login&#x2F;password access:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-authentication-required&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-username&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;your_login&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-password&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;your_password&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If this is on a home network and login&#x2F;password isn&#x27;t needed, it can be disabled:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-authentication-required&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;address-restrictions&quot;&gt;Address restrictions&lt;&#x2F;h3&gt;
+&lt;p&gt;You can allow access from specific devices on the network,
+set via the &lt;code&gt;rpc-whitelist&lt;&#x2F;code&gt; parameter as a comma-separated string, with &lt;code&gt;rpc-whitelist-enabled&lt;&#x2F;code&gt; turned on:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-whitelist&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;127.0.0.1,192.168.1.2&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-whitelist-enabled&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There&#x27;s a similar setting, but for restricting the addresses at which the web interface will open.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;rpc-host-whitelist&lt;&#x2F;code&gt; (note the word host in the name), also set as a comma-separated string:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-host-whitelist&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;transmission.lan,192.168.1.10&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-host-whitelist-enabled&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>esp rust: setting up defmt</title>
+        <published>2026-07-06T00:00:00+00:00</published>
+        <updated>2026-07-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/en/esp-rust-defmt/"/>
+        <id>https://domdev.su/en/esp-rust-defmt/</id>
+        
+        <content type="html" xml:base="https://domdev.su/en/esp-rust-defmt/">&lt;h2 id=&quot;setting-up-defmt-on-esp32-c6-esp-hal-probe-rs&quot;&gt;Setting up defmt on ESP32-C6 (esp-hal + probe-rs)&lt;&#x2F;h2&gt;
+&lt;p&gt;Notes on migrating from &lt;code&gt;rtt-target&lt;&#x2F;code&gt; to &lt;code&gt;defmt&lt;&#x2F;code&gt; for logging over RTT.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;1-dependencies&quot;&gt;1. Dependencies&lt;&#x2F;h2&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;dependencies&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;     =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;1.1.1&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt-rtt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;1.3.0&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;rtt-target&lt;&#x2F;code&gt; can be removed — &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt; replaces it.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;2-linking-the-defmt-section&quot;&gt;2. Linking: the &lt;code&gt;.defmt&lt;&#x2F;code&gt; section&lt;&#x2F;h2&gt;
+&lt;p&gt;Error at startup:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Error: Failed to parse defmt data&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt version found, but no `.defmt` section - check your linker configuration&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Cause: the &lt;code&gt;defmt.x&lt;&#x2F;code&gt; linker script (shipped with the &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt; crate) isn&#x27;t linked in.&lt;&#x2F;p&gt;
+&lt;p&gt;Fix — add a flag to &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;build&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;rustflags&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; [&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  &amp;quot;-C&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;link-arg=-Tdefmt.x&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;3-transport-initialization&quot;&gt;3. Transport initialization&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;code&gt;defmt&lt;&#x2F;code&gt; by itself only formats messages — where they&#x27;re sent is decided by a separate transport crate.
+Since the project already had an RTT channel (via &lt;code&gt;rtt-target&lt;&#x2F;code&gt;), the logical choice is &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #8839EF;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt; defmt_rtt &lt;&#x2F;span&gt;&lt;span style=&quot;color: #8839EF;&quot;&gt;as&lt;&#x2F;span&gt;&lt;span&gt; _&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;font-style: italic;&quot;&gt; &#x2F;&#x2F; wires up RTT as the transport for defmt&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Important: &lt;code&gt;rtt_target::rtt_init_print!()&lt;&#x2F;code&gt; must be removed — two ways of initializing the RTT channel conflict.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;4-the-mandatory-timestamp&quot;&gt;4. The mandatory timestamp&lt;&#x2F;h2&gt;
+&lt;p&gt;Without it the build fails at link time:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;undefined symbol: _defmt_timestamp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Every defmt frame includes a timestamp per the protocol, so it needs to be set explicitly:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;timestamp!&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;(&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;=u64:us&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;    esp_hal&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;time&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #DF8E1D;font-style: italic;&quot;&gt;Instant&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;duration_since_epoch&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;as_micros&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;);&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here &lt;code&gt;:us&lt;&#x2F;code&gt; tells the host (probe-rs) to format the number as seconds with a fractional part
+(e.g. &lt;code&gt;12.345678&lt;&#x2F;code&gt;), instead of printing raw microseconds.&lt;&#x2F;p&gt;
+&lt;p&gt;If a timestamp isn&#x27;t needed at all, an empty format can be left — the symbol still gets
+defined for linking:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;timestamp!&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;);&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;5-builds-but-prints-nothing&quot;&gt;5. &quot;Builds, but prints nothing&quot;&lt;&#x2F;h2&gt;
+&lt;p&gt;The likely cause is the log level not being set via the &lt;code&gt;DEFMT_LOG&lt;&#x2F;code&gt; environment variable (the &lt;code&gt;defmt&lt;&#x2F;code&gt; analog of &lt;code&gt;RUST_LOG&lt;&#x2F;code&gt; from &lt;code&gt;env_logger&lt;&#x2F;code&gt;).
+By default, &lt;code&gt;info&lt;&#x2F;code&gt; level doesn&#x27;t pass through.&lt;&#x2F;p&gt;
+&lt;p&gt;Quick check:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;DEFMT_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;info&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; cargo&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; run --release&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;To avoid setting the variable every time, put it in &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;DEFMT_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;info&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;final-checklist&quot;&gt;Final checklist&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;defmt&lt;&#x2F;code&gt; + &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt; in dependencies, &lt;code&gt;rtt-target&lt;&#x2F;code&gt; removed&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;-Tdefmt.x&lt;&#x2F;code&gt; in &lt;code&gt;rustflags&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;use defmt_rtt as _;&lt;&#x2F;code&gt; in &lt;code&gt;main.rs&lt;&#x2F;code&gt;, old &lt;code&gt;rtt_init_print!()&lt;&#x2F;code&gt; removed&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;defmt::timestamp!&lt;&#x2F;code&gt; defined (otherwise linking fails)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;DEFMT_LOG&lt;&#x2F;code&gt; set (directly or via &lt;code&gt;[env]&lt;&#x2F;code&gt; in &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>db-mcp: connect your database to AI</title>
+        <published>2026-05-30T00:00:00+00:00</published>
+        <updated>2026-05-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/en/db-mcp/"/>
+        <id>https://domdev.su/en/db-mcp/</id>
+        
+        <content type="html" xml:base="https://domdev.su/en/db-mcp/">&lt;p&gt;I needed a private utility for work and personal projects: read data from databases, but never write. Existing solutions weren&#x27;t what I wanted — those that existed were JS&#x2F;Python packages. I just needed a simple binary: download and run, without Node.js or other overhead. Plus, always nice to build something yourself :)&lt;&#x2F;p&gt;
+&lt;p&gt;So I built &lt;strong&gt;db-mcp&lt;&#x2F;strong&gt; (&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&quot;&gt;github&lt;&#x2F;a&gt;) — a lightweight Rust binary that:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reads from PostgreSQL, MySQL&#x2F;MariaDB, SQLite, and ClickHouse via URL scheme&lt;&#x2F;li&gt;
+&lt;li&gt;Works with Claude, OpenCode, Jan, Zed, and any MCP-compatible client&lt;&#x2F;li&gt;
+&lt;li&gt;Simple and safe by design: read-only (SELECT only), parameterized queries&lt;&#x2F;li&gt;
+&lt;li&gt;Builds once with all backends enabled — choose your database at startup&lt;&#x2F;li&gt;
+&lt;li&gt;Ships as a fully static Linux binary (musl, no glibc at runtime)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;why-this-was-needed&quot;&gt;Why this was needed&lt;&#x2F;h2&gt;
+&lt;p&gt;At work, I often need to give Claude access to data: fetch information, analyze, provide context for scripting. Requirements were:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Safe&lt;&#x2F;strong&gt; (read-only, parameterized queries)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Private&lt;&#x2F;strong&gt; (runs locally, nothing sent to cloud)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Universal&lt;&#x2F;strong&gt; (not just Claude — I use OpenCode, Zed, Jan for different tasks)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;how-it-works&quot;&gt;How it works&lt;&#x2F;h2&gt;
+&lt;p&gt;db-mcp is a stdio MCP server written in Rust. You point it at a database URL via the &lt;code&gt;--database-url&lt;&#x2F;code&gt; flag or the &lt;code&gt;DATABASE_URL&lt;&#x2F;code&gt; env var:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url mysql:&#x2F;&#x2F;user:pass@localhost:3306&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url sqlite:&#x2F;&#x2F;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;data.db&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url clickhouse:&#x2F;&#x2F;default:pass@localhost:8123&#x2F;default&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The server detects the engine from the URL scheme and connects. Then Claude&#x2F;OpenCode&#x2F;Jan can use three tools:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Tool&lt;&#x2F;th&gt;&lt;th&gt;Params&lt;&#x2F;th&gt;&lt;th&gt;What it does&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;list_tables&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;—&lt;&#x2F;td&gt;&lt;td&gt;List user tables&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;describe_table&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;table&lt;&#x2F;code&gt;, &lt;code&gt;schema?&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Columns, types, nullability&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;query&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;sql&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Run a SELECT, returns JSON rows&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;A &lt;code&gt;query&lt;&#x2F;code&gt; call returns plain JSON, so the model gets real values to reason about:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 1&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;ada@example.com&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;2026-05-01 09:12:33&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; },&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 2&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;linus@example.com&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;2026-05-03 14:50:01&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;safe-by-design&quot;&gt;Safe by design&lt;&#x2F;h3&gt;
+&lt;p&gt;SELECT-only enforcement lives in the server, not in the adapters. Anything that doesn&#x27;t start with &lt;code&gt;SELECT&lt;&#x2F;code&gt; (case-insensitive, after trim) is rejected — that even blocks CTE tricks like &lt;code&gt;WITH ... INSERT ... RETURNING&lt;&#x2F;code&gt;. Every adapter uses parameterized queries, never string-concatenated SQL. For an extra layer, point it at a read-only database role.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;setup-for-different-tools&quot;&gt;Setup for different tools&lt;&#x2F;h2&gt;
+&lt;p&gt;All clients launch the same binary; the difference is just where the config file lives. I prefer passing the URL through &lt;code&gt;DATABASE_URL&lt;&#x2F;code&gt; so it isn&#x27;t visible in the args list.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;claude-code-cli&quot;&gt;Claude Code (CLI)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;cli&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;claude&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; mcp add db&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  --env DATABASE_URL=postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  -- &#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;claude.json&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;mcpServers&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;stdio&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Restart Claude and the tools appear.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;opencode&quot;&gt;OpenCode&lt;&#x2F;h3&gt;
+&lt;p&gt;In your &lt;code&gt;opencode.json&lt;&#x2F;code&gt; (project or &lt;code&gt;~&#x2F;.config&#x2F;opencode&#x2F;opencode.json&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;$schema&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;https:&#x2F;&#x2F;opencode.ai&#x2F;config.json&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;database&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;local&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;--database-url&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;sqlite:&#x2F;&#x2F;&#x2F;home&#x2F;me&#x2F;work&#x2F;data.sqlite&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;enabled&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; true&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;jan&quot;&gt;Jan&lt;&#x2F;h3&gt;
+&lt;p&gt;Jan has built-in MCP support (Settings → MCP Servers). The equivalent config is a command + args + env entry:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;database&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;prod.example.com:5432&#x2F;analytics&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;zed&quot;&gt;Zed&lt;&#x2F;h3&gt;
+&lt;p&gt;In &lt;code&gt;settings.json&lt;&#x2F;code&gt; (custom MCP servers live under &lt;code&gt;context_servers&lt;&#x2F;code&gt;, not &lt;code&gt;lsp&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;context_servers&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;enabled&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; true&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;remote&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; false&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;in-practice&quot;&gt;In practice&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;scenario-1-development-context&quot;&gt;Scenario 1: development context&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;In Claude Code:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;Help me write a migration to add a new field.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Check the current users table structure.&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Claude:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;1. Calls db-mcp (describe_table) → gets current schema&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;2. Sees existing fields and constraints&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;3. Generates a correct migration for your actual database&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;scenario-2-data-analysis-in-opencode&quot;&gt;Scenario 2: data analysis in OpenCode&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;In OpenCode analyzing metrics:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;How many active users this month?&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;What are the most popular features?&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;OpenCode uses db-mcp (query), the model sees real numbers&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;and provides analysis grounded in actual data.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;scenario-3-debugging-in-jan&quot;&gt;Scenario 3: debugging in Jan&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Jan with db-mcp helps debug:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;Are there orders without user_id in the orders table?&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Jan queries through db-mcp, sees there are 12 such records,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;suggests how to fix it.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;&#x2F;h2&gt;
+&lt;p&gt;Quick install (Linux and macOS Apple Silicon) — auto-detects OS&#x2F;arch, verifies the checksum, installs to &lt;code&gt;~&#x2F;.local&#x2F;bin&lt;&#x2F;code&gt; by default:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;curl&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --proto &amp;#39;=https&amp;#39; --tlsv1.2 -sSf&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;zeslava&#x2F;db-mcp&#x2F;main&#x2F;install.sh&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; |&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; sh&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Or grab a release tarball manually (Linux x86_64&#x2F;aarch64, macOS arm64, Windows x86_64):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;TARGET&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;x86_64-unknown-linux-gnu&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;curl&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -sSL &amp;quot;https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&#x2F;releases&#x2F;latest&#x2F;download&#x2F;db-mcp-&lt;&#x2F;span&gt;&lt;span&gt;${TARGET}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;.tar.gz&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;  |&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; tar&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -xz&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -m&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 755&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;db-mcp-&lt;&#x2F;span&gt;&lt;span&gt;${TARGET}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&#x2F;db-mcp&amp;quot; &amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;$HOME&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&#x2F;.local&#x2F;bin&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Or build from source:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; clone https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #D20F39;font-style: italic;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; build --release&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;.&#x2F;target&#x2F;release&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url postgres:&#x2F;&#x2F;localhost&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;benefits-of-this-approach&quot;&gt;Benefits of this approach&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;✅ One binary for four engines (PostgreSQL, MySQL&#x2F;MariaDB, SQLite, ClickHouse)&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Works everywhere: Claude, OpenCode, Jan, Zed, any MCP client&lt;&#x2F;li&gt;
+&lt;li&gt;✅ No runtime overhead (no JS, Python) — pure Rust, static musl binary on Linux&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Safe by design: SELECT-only, parameterized queries&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Private: runs locally or in your infrastructure&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Simple setup: just a database URL&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;what-s-next&quot;&gt;What&#x27;s next&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Support for more databases (and beyond)&lt;&#x2F;li&gt;
+&lt;li&gt;Query logging and audit trails&lt;&#x2F;li&gt;
+&lt;li&gt;Per-table access control (for more granular permissions)&lt;&#x2F;li&gt;
+&lt;li&gt;Server mode&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

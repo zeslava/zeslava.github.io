@@ -4,7 +4,7 @@ date = 2026-07-06
 description = "A note on setting up defmt"
 +++
 
-# Setting up defmt on ESP32-C6 (esp-hal + probe-rs)
+## Setting up defmt on ESP32-C6 (esp-hal + probe-rs)
 
 Notes on migrating from `rtt-target` to `defmt` for logging over RTT.
 

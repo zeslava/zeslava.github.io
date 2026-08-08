@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="ru">
+    <title>domdev</title>
+    <subtitle>Пишу о том, что мне интересно: разработка, системное администрирование, железо.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://domdev.su/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://domdev.su"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-08-05T00:00:00+00:00</updated>
+    <id>https://domdev.su/atom.xml</id>
+    <entry xml:lang="ru">
+        <title>transmission на сервере freebsd</title>
+        <published>2026-08-05T00:00:00+00:00</published>
+        <updated>2026-08-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/transmission-freebsd-server/"/>
+        <id>https://domdev.su/transmission-freebsd-server/</id>
+        
+        <content type="html" xml:base="https://domdev.su/transmission-freebsd-server/">&lt;h2 id=&quot;ustanovka&quot;&gt;Установка&lt;&#x2F;h2&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;pkg&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; install transmission-daemon transmission-web transmission-cli&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;daemon&lt;&#x2F;code&gt; - нужен для установки службы&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;web&lt;&#x2F;code&gt; - устанавливает web интерфейс&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;cli&lt;&#x2F;code&gt; - для управления&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nastroika&quot;&gt;Настройка&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;vkliuchenie-servisa-demona&quot;&gt;Включение сервиса(демона)&lt;&#x2F;h2&gt;
+&lt;p&gt;Через &lt;code&gt;sysrc&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;sysrc&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; transmission_enable=&amp;quot;YES&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;либо руками прописать в &lt;code&gt;&#x2F;etc&#x2F;rc.conf&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission_enable&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;YES&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;nastroika-settings-json&quot;&gt;Настройка &lt;code&gt;settings.json&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;Файл конфигурации находится тут &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;transmission&#x2F;home&#x2F;settings.json&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;⚠️ Важно: &lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Редактировать файл только при остановленной службе (service transmission stop), &lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;иначе Transmission сбросит все изменения.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Часть значений в &lt;code&gt;settings.json&lt;&#x2F;code&gt; определяется через переменные rc.conf, значения по умолчанию нахоядтся тут &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;rc.d&#x2F;transmission&lt;&#x2F;code&gt;.
+Полезный файл с описанием всех переменных, для чего они и какие значения по умолчанию.&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;⚠️ Важно: &lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Значения берутся из переменных, поэтому, если задать значение в settings.json, &lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission может его перезаписать&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;nastroika-direktorii-dlia-zagruzok&quot;&gt;Настройка директории для загрузок&lt;&#x2F;h2&gt;
+&lt;p&gt;Директория для загрузок настраивается через переменную в &lt;code&gt;rc.conf&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;transmission_download_dir&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&#x2F;mnt&#x2F;transmission&#x2F;downloads&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;По умолчанию &lt;code&gt;&#x2F;usr&#x2F;local&#x2F;etc&#x2F;transmission&#x2F;home&#x2F;Downloads&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nastroika-dostupa&quot;&gt;Настройка доступа&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;prava-na-direktoriiu-zagruzok&quot;&gt;Права на директорию загрузок&lt;&#x2F;h3&gt;
+&lt;p&gt;По умолчанию transmission работает под пользователем и группой transmission, поэтому для директории загрузок надо выставить права:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;chown&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -R transmission:transmission &#x2F;mnt&#x2F;transmission&#x2F;downloads&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Можно так же добавить себя в группу transmission:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;pw&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; groupmod transmission -m&lt;&#x2F;span&gt;&lt;span&gt; $USER&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;autentifikatsiia-po-loginu-proliu&quot;&gt;Аутентификация по логину&#x2F;пролю&lt;&#x2F;h3&gt;
+&lt;p&gt;Можно добавить доступ по логину&#x2F;паролю:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-authentication-required&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-username&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;ваш_логин&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-password&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;ваш_пароль&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Если это в домашней сети и нет смысла во входе по логину&#x2F;паролю, то можно отключить&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-authentication-required&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;ogranichenie-po-adresam&quot;&gt;Ограничение по адресам&lt;&#x2F;h3&gt;
+&lt;p&gt;Можно настроить доступ с определенных устройств в сети,
+задается в параметре &lt;code&gt;rpc-whitelist&lt;&#x2F;code&gt; строкой со значениями через запятую и включением &lt;code&gt;rpc-whitelist-enabled&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-whitelist&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;127.0.0.1,192.168.1.2&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-whitelist-enabled&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Есть аналогичная настройка, но для ограничения адресов, по которым будет открываться web интерфейс.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;rpc-host-whitelist&lt;&#x2F;code&gt; (слово host в названии), задается так же строкой со значениями через запятую:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-host-whitelist&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;transmission.lan,192.168.1.10&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;rpc-host-whitelist-enabled&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+        
+    </entry>
+    <entry xml:lang="ru">
+        <title>esp rust: настройка defmt</title>
+        <published>2026-07-06T00:00:00+00:00</published>
+        <updated>2026-07-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/esp-rust-defmt/"/>
+        <id>https://domdev.su/esp-rust-defmt/</id>
+        
+        <content type="html" xml:base="https://domdev.su/esp-rust-defmt/">&lt;h2 id=&quot;nastroika-defmt-na-esp32-c6-esp-hal-probe-rs&quot;&gt;Настройка defmt на ESP32-C6 (esp-hal + probe-rs)&lt;&#x2F;h2&gt;
+&lt;p&gt;Заметка по переходу с &lt;code&gt;rtt-target&lt;&#x2F;code&gt; на &lt;code&gt;defmt&lt;&#x2F;code&gt; для логирования через RTT.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;1-zavisimosti&quot;&gt;1. Зависимости&lt;&#x2F;h2&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;dependencies&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;     =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;1.1.1&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt-rtt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;1.3.0&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;rtt-target&lt;&#x2F;code&gt; можно удалить — его заменяет &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;2-linkovka-sektsiia-defmt&quot;&gt;2. Линковка: секция &lt;code&gt;.defmt&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;Ошибка при запуске:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Error: Failed to parse defmt data&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;defmt version found, but no `.defmt` section - check your linker configuration&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Причина: линкер-скрипт &lt;code&gt;defmt.x&lt;&#x2F;code&gt; (идёт вместе с крейтом &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt;) не подключён.&lt;&#x2F;p&gt;
+&lt;p&gt;Фикс: добавить флаг в &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;build&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;rustflags&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; [&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  &amp;quot;-C&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;link-arg=-Tdefmt.x&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;3-initsializatsiia-transporta&quot;&gt;3. Инициализация транспорта&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;code&gt;defmt&lt;&#x2F;code&gt; сам по себе только форматирует сообщения — куда их слать, решает отдельный крейт-транспорт.
+Раз в проекте уже был RTT-канал (через &lt;code&gt;rtt-target&lt;&#x2F;code&gt;), логичный выбор — &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #8839EF;&quot;&gt;use&lt;&#x2F;span&gt;&lt;span&gt; defmt_rtt &lt;&#x2F;span&gt;&lt;span style=&quot;color: #8839EF;&quot;&gt;as&lt;&#x2F;span&gt;&lt;span&gt; _&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;font-style: italic;&quot;&gt; &#x2F;&#x2F; подключает RTT как транспорт для defmt&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Важно: &lt;code&gt;rtt_target::rtt_init_print!()&lt;&#x2F;code&gt; нужно убрать — два способа инициализировать RTT-канал конфликтуют.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;4-obiazatel-naia-vremennaia-metka&quot;&gt;4. Обязательная временная метка&lt;&#x2F;h2&gt;
+&lt;p&gt;Без неё сборка падает на линковке:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;undefined symbol: _defmt_timestamp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Каждый defmt-фрейм включает timestamp по протоколу, поэтому нужно явно её задать:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;timestamp!&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;(&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;=u64:us&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;    esp_hal&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;time&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #DF8E1D;font-style: italic;&quot;&gt;Instant&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;duration_since_epoch&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;        .&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;as_micros&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;()&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;);&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Где &lt;code&gt;:us&lt;&#x2F;code&gt; говорит хосту (probe-rs) отформатировать число как секунды с дробной частью
+(например, &lt;code&gt;12.345678&lt;&#x2F;code&gt;), а не выводить сырые микросекунды.&lt;&#x2F;p&gt;
+&lt;p&gt;Если метка не нужна вообще — можно оставить пустой формат, символ всё равно останется
+определён для линковки:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;rust&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #DF8E1D;&quot;&gt;defmt&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;timestamp!&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;);&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;5-sobiraetsia-no-nichego-ne-pechataet&quot;&gt;5. &quot;Собирается, но ничего не печатает&quot;&lt;&#x2F;h2&gt;
+&lt;p&gt;Вероятная причина — уровень логов не выставлен через переменную окружения &lt;code&gt;DEFMT_LOG&lt;&#x2F;code&gt; (аналог &lt;code&gt;RUST_LOG&lt;&#x2F;code&gt; из &lt;code&gt;env_logger&lt;&#x2F;code&gt;).
+По умолчанию уровень &lt;code&gt;info&lt;&#x2F;code&gt; не проходит.&lt;&#x2F;p&gt;
+&lt;p&gt;Быстрая проверка:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;DEFMT_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;info&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; cargo&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; run --release&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Чтобы не выставлять переменную каждый раз, можно прописать её в &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;DEFMT_LOG&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; =&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;info&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;itogovyi-chek-list&quot;&gt;Итоговый чек-лист&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;defmt&lt;&#x2F;code&gt; + &lt;code&gt;defmt-rtt&lt;&#x2F;code&gt; в зависимостях, &lt;code&gt;rtt-target&lt;&#x2F;code&gt; удалён&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;-Tdefmt.x&lt;&#x2F;code&gt; в &lt;code&gt;rustflags&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;use defmt_rtt as _;&lt;&#x2F;code&gt; в &lt;code&gt;main.rs&lt;&#x2F;code&gt;, старая &lt;code&gt;rtt_init_print!()&lt;&#x2F;code&gt; убрана&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;defmt::timestamp!&lt;&#x2F;code&gt; определена (иначе линковка падает)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;input disabled=&quot;&quot; type=&quot;checkbox&quot; checked=&quot;&quot;&#x2F;&gt;
+&lt;code&gt;DEFMT_LOG&lt;&#x2F;code&gt; выставлен (напрямую или через &lt;code&gt;[env]&lt;&#x2F;code&gt; в &lt;code&gt;.cargo&#x2F;config.toml&lt;&#x2F;code&gt;)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="ru">
+        <title>db-mcp: подключаем бд к ии</title>
+        <published>2026-05-30T00:00:00+00:00</published>
+        <updated>2026-05-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://domdev.su/db-mcp/"/>
+        <id>https://domdev.su/db-mcp/</id>
+        
+        <content type="html" xml:base="https://domdev.su/db-mcp/">&lt;p&gt;Нужна была приватная утилита для работы и домашних проектов: читать данные из баз, но ничего не писать.
+Готовые решения не понравились, а те что были — JS&#x2F;Python-пакеты.
+А мне нужен был просто бинарь: скачал и запустил, без всяких Node.js и прочих.
+Плюс всегда есть желание сделать что-то своё :)&lt;&#x2F;p&gt;
+&lt;p&gt;Так появился &lt;strong&gt;db-mcp&lt;&#x2F;strong&gt; (&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&quot;&gt;github&lt;&#x2F;a&gt;) — небольшой бинарь, который:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Читает данные из PostgreSQL, MySQL&#x2F;MariaDB, SQLite и ClickHouse через URL-схему&lt;&#x2F;li&gt;
+&lt;li&gt;Работает с Claude, OpenCode, Jan, Zed и другими MCP-клиентами&lt;&#x2F;li&gt;
+&lt;li&gt;Простой и безопасный: только SELECT, параметризованные запросы&lt;&#x2F;li&gt;
+&lt;li&gt;Собирается один раз со всеми бэкендами сразу — выбираете БД при запуске&lt;&#x2F;li&gt;
+&lt;li&gt;Под Linux — полностью статический бинарь (musl, без glibc в рантайме)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;pochemu-eto-bylo-nuzhno&quot;&gt;Почему это было нужно&lt;&#x2F;h2&gt;
+&lt;p&gt;На работе часто нужно давать Claude доступ к данным: достать информацию, проанализировать, помочь с контекстом для написания скриптов. Нужно было:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Безопасно&lt;&#x2F;strong&gt; (только чтение, параметризованные запросы)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Приватно&lt;&#x2F;strong&gt; (работает локально, ничего не отправляется в облако)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Универсально&lt;&#x2F;strong&gt; (не только Claude — я использую OpenCode, Zed, Jan для разных задач)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;kak-eto-rabotaet&quot;&gt;Как это работает&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;db-mcp&lt;&#x2F;strong&gt; — это stdio MCP-сервер на Rust. URL базы передаётся флагом &lt;code&gt;--database-url&lt;&#x2F;code&gt; или переменной &lt;code&gt;DATABASE_URL&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url mysql:&#x2F;&#x2F;user:pass@localhost:3306&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url sqlite:&#x2F;&#x2F;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;data.db&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url clickhouse:&#x2F;&#x2F;default:pass@localhost:8123&#x2F;default&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Сервер определяет движок по схеме URL и подключается. Дальше Claude&#x2F;OpenCode&#x2F;Jan может использовать три инструмента:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Tool&lt;&#x2F;th&gt;&lt;th&gt;Параметры&lt;&#x2F;th&gt;&lt;th&gt;Что делает&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;list_tables&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;—&lt;&#x2F;td&gt;&lt;td&gt;Список пользовательских таблиц&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;describe_table&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;table&lt;&#x2F;code&gt;, &lt;code&gt;schema?&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Колонки, типы, nullability&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;query&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;sql&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Выполняет SELECT, возвращает JSON-строки&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;&lt;code&gt;query&lt;&#x2F;code&gt; возвращает обычный JSON, так что модель получает реальные значения, с которыми можно работать:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;[&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 1&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;ada@example.com&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;2026-05-01 09:12:33&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; },&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  { &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 2&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;email&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;linus@example.com&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;created_at&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;2026-05-03 14:50:01&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt; }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;bezopasnost-po-dizainu&quot;&gt;Безопасность по дизайну&lt;&#x2F;h3&gt;
+&lt;p&gt;Ограничение «только SELECT» живёт в сервере, а не в адаптерах. Всё, что не начинается с &lt;code&gt;SELECT&lt;&#x2F;code&gt; (без учёта регистра, после &lt;code&gt;trim&lt;&#x2F;code&gt;), отклоняется — это блокирует и трюки с CTE вроде &lt;code&gt;WITH ... INSERT ... RETURNING&lt;&#x2F;code&gt;. Каждый адаптер использует параметризованные запросы, никакой конкатенации SQL строками. Для дополнительного слоя защиты подключайтесь под ролью с правами только на чтение.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nastroika-dlia-raznykh-instrumentov&quot;&gt;Настройка для разных инструментов&lt;&#x2F;h2&gt;
+&lt;p&gt;Все клиенты запускают один и тот же бинарь, отличается только путь к конфигу. Я предпочитаю передавать URL через &lt;code&gt;DATABASE_URL&lt;&#x2F;code&gt;, чтобы он не светился в списке аргументов.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;claude-code-cli&quot;&gt;Claude Code (CLI)&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;cli&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;claude&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; mcp add db&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  --env DATABASE_URL=postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  -- &#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;claude.json&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;mcpServers&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;stdio&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Перезагружаем Claude — инструменты появляются.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;opencode&quot;&gt;OpenCode&lt;&#x2F;h3&gt;
+&lt;p&gt;В &lt;code&gt;opencode.json&lt;&#x2F;code&gt; (в проекте или &lt;code&gt;~&#x2F;.config&#x2F;opencode&#x2F;opencode.json&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;$schema&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;https:&#x2F;&#x2F;opencode.ai&#x2F;config.json&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;database&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;local&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&amp;quot;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;--database-url&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;sqlite:&#x2F;&#x2F;&#x2F;home&#x2F;me&#x2F;work&#x2F;data.sqlite&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;enabled&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; true&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;jan&quot;&gt;Jan&lt;&#x2F;h3&gt;
+&lt;p&gt;Jan имеет встроенную поддержку MCP (Settings → MCP Servers). Эквивалентный конфиг — запись command + args + env:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;database&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;prod.example.com:5432&#x2F;analytics&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;zed&quot;&gt;Zed&lt;&#x2F;h3&gt;
+&lt;p&gt;В &lt;code&gt;settings.json&lt;&#x2F;code&gt; (кастомные MCP-серверы живут в &lt;code&gt;context_servers&lt;&#x2F;code&gt;, а не в &lt;code&gt;lsp&lt;&#x2F;code&gt;):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;json&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;context_servers&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;enabled&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; true&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;remote&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; false&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;command&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;&#x2F;absolute&#x2F;path&#x2F;to&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;args&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: [],&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;env&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;: {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;&quot;&gt;DATABASE_URL&lt;&#x2F;span&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;&amp;quot;:&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;postgres:&#x2F;&#x2F;user:pass@localhost:5432&#x2F;mydb&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;      }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;    }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;  }&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #7C7F93;&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;na-praktike&quot;&gt;На практике&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;stsenarii-1-pomoshch-s-kontekstom-pri-razrabotke&quot;&gt;Сценарий 1: помощь с контекстом при разработке&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Я в Claude Code:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;Помоги написать миграцию для добавления нового поля.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Посмотри текущую структуру таблицы users.&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Claude:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;1. Дёргает db-mcp (describe_table) → узнаёт текущую схему&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;2. Видит какие поля уже есть, какие constraints&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;3. Генерирует правильную миграцию для именно вашей БД&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;stsenarii-2-analiz-dannykh-v-opencode&quot;&gt;Сценарий 2: анализ данных в OpenCode&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;В OpenCode анализирую метрики:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;Сколько активных пользователей в этом месяце?&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Какие самые популярные функции?&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;OpenCode использует db-mcp (query), модель смотрит реальные данные&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;и даёт анализ с конкретными цифрами.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;stsenarii-3-otladka-v-jan&quot;&gt;Сценарий 3: отладка в Jan&lt;&#x2F;h3&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Jan с db-mcp помогает разобраться с багом:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;quot;В таблице orders есть записи без user_id?&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Jan запрашивает через db-mcp, видит что есть 12 таких,&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;предлагает как это почистить.&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;ustanovka&quot;&gt;Установка&lt;&#x2F;h2&gt;
+&lt;p&gt;Быстрая установка (Linux и macOS Apple Silicon) — определяет ОС&#x2F;архитектуру, проверяет контрольную сумму, по умолчанию ставит в &lt;code&gt;~&#x2F;.local&#x2F;bin&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;curl&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --proto &amp;#39;=https&amp;#39; --tlsv1.2 -sSf&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;  https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;zeslava&#x2F;db-mcp&#x2F;main&#x2F;install.sh&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt; |&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; sh&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Или скачиваете тарболл из релизов вручную (Linux x86_64&#x2F;aarch64, macOS arm64, Windows x86_64):&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;TARGET&lt;&#x2F;span&gt;&lt;span style=&quot;color: #179299;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;x86_64-unknown-linux-gnu&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;curl&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -sSL &amp;quot;https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&#x2F;releases&#x2F;latest&#x2F;download&#x2F;db-mcp-&lt;&#x2F;span&gt;&lt;span&gt;${TARGET}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;.tar.gz&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #EA76CB;&quot;&gt; \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #179299;&quot;&gt;  |&lt;&#x2F;span&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt; tar&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -xz&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;install&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; -m&lt;&#x2F;span&gt;&lt;span style=&quot;color: #FE640B;&quot;&gt; 755&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; &amp;quot;db-mcp-&lt;&#x2F;span&gt;&lt;span&gt;${TARGET}&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&#x2F;db-mcp&amp;quot; &amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;$HOME&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt;&#x2F;.local&#x2F;bin&#x2F;db-mcp&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Или собираете сами:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #4C4F69; background-color: #EFF1F5;&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;git&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; clone https:&#x2F;&#x2F;github.com&#x2F;zeslava&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #D20F39;font-style: italic;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; db-mcp&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;cargo&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; build --release&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #1E66F5;font-style: italic;&quot;&gt;.&#x2F;target&#x2F;release&#x2F;db-mcp&lt;&#x2F;span&gt;&lt;span style=&quot;color: #40A02B;&quot;&gt; --database-url postgres:&#x2F;&#x2F;localhost&#x2F;mydb&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;preimushchestva-takogo-podkhoda&quot;&gt;Преимущества такого подхода&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;✅ Один бинарь для четырёх движков (PostgreSQL, MySQL&#x2F;MariaDB, SQLite, ClickHouse)&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Работает везде: Claude, OpenCode, Jan, Zed, любой MCP-клиент&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Никакого runtime (JS, Python) — чистый Rust, статический бинарь&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Безопасно по дизайну: только SELECT, параметризованные запросы&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Приватно: работает локально или в вашей инфре&lt;&#x2F;li&gt;
+&lt;li&gt;✅ Простая настройка: просто URL БД&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;dal-she-v-planakh&quot;&gt;Дальше в планах:&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Поддержка других БД (и не только бд)&lt;&#x2F;li&gt;
+&lt;li&gt;Логирование и аудит запросов&lt;&#x2F;li&gt;
+&lt;li&gt;Ограничение доступа по таблицам (для более узких прав)&lt;&#x2F;li&gt;
+&lt;li&gt;Режим сервера&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

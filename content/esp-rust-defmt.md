@@ -4,7 +4,7 @@ date = 2026-07-06
 description = "Заметка по настройке defmt"
 +++
 
-# Настройка defmt на ESP32-C6 (esp-hal + probe-rs)
+## Настройка defmt на ESP32-C6 (esp-hal + probe-rs)
 
 Заметка по переходу с `rtt-target` на `defmt` для логирования через RTT.
 
